@@ -1,0 +1,42 @@
+{% extends "qsos/base.html" %}
+{% block content %}
+<div class="toolbar">
+  <h2 style="margin:0">QSO {{ object.callsign }}</h2>
+  <div class="stack">
+    <a class="btn" href="{% url 'qsos:update' object.pk %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'qsos:delete' object.pk %}">Delete</a>
+  </div>
+</div>
+
+<table>
+  <tbody>
+    <tr><th>Callsign</th><td>{{ object.callsign }}</td></tr>
+    <tr><th>Date</th><td>{{ object.qso_date }}</td></tr>
+    <tr><th>Time</th><td>{{ object.time_on }}</td></tr>
+    <tr><th>Band</th><td>{{ object.band }}</td></tr>
+    <tr><th>Freq</th><td>{{ object.freq }}</td></tr>
+    <tr><th>Band RX</th><td>{{ object.band_rx }}</td></tr>
+    <tr><th>Freq RX</th><td>{{ object.freq_rx }}</td></tr>
+    <tr><th>Mode</th><td>{{ object.mode }}</td></tr>
+    <tr><th>Submode</th><td>{{ object.submode }}</td></tr>
+    <tr><th>Prop Mode</th><td>{{ object.prop_mode }}</td></tr>
+    <tr><th>Satellite</th><td>{{ object.sat_name }}</td></tr>
+    <tr><th>Station Callsign</th><td>{{ object.station_callsign }}</td></tr>
+    <tr><th>Operator</th><td>{{ object.operator }}</td></tr>
+    <tr><th>RST Sent</th><td>{{ object.rst_sent }}</td></tr>
+    <tr><th>RST Rcvd</th><td>{{ object.rst_rcvd }}</td></tr>
+    <tr><th>Country</th><td>{{ object.country }}</td></tr>
+    <tr><th>Grid</th><td>{{ object.gridsquare }}</td></tr>
+    <tr><th>MY_DXCC</th><td>{{ object.my_dxcc }}</td></tr>
+    <tr><th>MY_STATE</th><td>{{ object.my_state }}</td></tr>
+    <tr><th>MY_CNTY</th><td>{{ object.my_cnty }}</td></tr>
+    <tr><th>MY_GRID</th><td>{{ object.my_gridsquare }}</td></tr>
+    <tr><th>MY_VUCC_GRIDS</th><td>{{ object.my_vucc_grids }}</td></tr>
+    <tr><th>MY_CQ_ZONE</th><td>{{ object.my_cq_zone }}</td></tr>
+    <tr><th>MY_ITU_ZONE</th><td>{{ object.my_itu_zone }}</td></tr>
+    <tr><th>Comment</th><td>{{ object.comment }}</td></tr>
+  </tbody>
+</table>
+
+<p><a class="btn" href="{% url 'qsos:list' %}">Back</a></p>
+{% endblock %}

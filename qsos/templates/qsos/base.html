@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LogHub</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+    <link rel="stylesheet" href="/static/css/tailwind.css" />
+    <style> a{color:#0a6} form .actions{margin-top:1rem} </style>
+  </head>
+  <body hx-boost="true">
+    <header class="toolbar">
+      <h1 style="margin:0"><a href="/qsos/" style="text-decoration:none;color:inherit">LogHub</a></h1>
+      <nav class="stack">
+        <a class="btn" href="/qsos/">QSOs</a>
+        <a class="btn" href="/admin/">Admin</a>
+      </nav>
+    </header>
+    {% block content %}{% endblock %}
+  </body>
+  
+</html>

@@ -1,0 +1,27 @@
+{% extends "qsos/base.html" %}
+{% block content %}
+  {% if object %}
+    <h2>Edit QSO</h2>
+  {% else %}
+    <h2>New QSO</h2>
+  {% endif %}
+
+  <form method="post" class="stack">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="field">
+        <label>{{ field.label_tag }}</label>
+        {{ field }}
+        {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+        {% for error in field.errors %}
+          <div style="color:#a00">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <div class="actions stack">
+      <button class="btn" type="submit">Save</button>
+      <a class="btn" href="{% url 'qsos:list' %}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+

@@ -1,0 +1,56 @@
+{% extends "qsos/base.html" %}
+{% block content %}
+<div class="toolbar">
+  <h2 style="margin:0">QSOs</h2>
+  <a class="btn" href="{% url 'qsos:create' %}">New QSO</a>
+  
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Callsign</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Band</th>
+      <th>Mode</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for qso in object_list %}
+    <tr>
+      <td><a href="{% url 'qsos:detail' qso.pk %}">{{ qso.callsign }}</a></td>
+      <td>{{ qso.qso_date }}</td>
+      <td>{{ qso.time_on }}</td>
+      <td>{{ qso.band }}</td>
+      <td>{{ qso.mode }}</td>
+      <td class="stack">
+        <a class="btn" href="{% url 'qsos:update' qso.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'qsos:delete' qso.pk %}">Delete</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6">No QSOs yet. Create one!</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<div class="toolbar">
+  <div></div>
+  <div class="stack">
+    {% if page_obj.has_previous %}
+      <a class="btn" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a class="btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+  </div>
+  
+</div>
+{% endif %}
+
+{% endblock %}
+
