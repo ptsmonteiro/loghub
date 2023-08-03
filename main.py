@@ -1,69 +1,34 @@
 import asyncio
-import xml.etree.ElementTree as ET
+import configparser
 
-message = """<?xml version="1.0" encoding="utf-8"?>
-<contactinfo>
-        <app>N1MM</app>
-        <contestname>DX</contestname>
-        <contestnr>0</contestnr>
-        <timestamp>2023-06-30 18:00:30</timestamp>
-        <mycall>F4JAW</mycall>
-        <band>28</band>
-        <rxfreq>2807535</rxfreq>
-        <txfreq>2807535</txfreq>
-        <operator>F4JAW</operator>
-        <mode>FT8</mode>
-        <call>EA5EB</call>
-        <countryprefix>EA</countryprefix>
-        <wpxprefix>EA5</wpxprefix>
-        <stationprefix></stationprefix>
-        <continent>EU</continent>
-        <snt>-08</snt>
-        <sntnr>0</sntnr>
-        <rcv>-11</rcv>
-        <rcvnr>0</rcvnr>
-        <gridsquare>IM99</gridsquare>
-        <exchange1></exchange1>
-        <section></section>
-        <comment>Balcony Outback 2000</comment>
-        <qth></qth>
-        <name></name>
-        <power></power>
-        <misctext></misctext>
-        <zone>0</zone>
-        <prec></prec>
-        <ck>0</ck>
-        <ismultiplier1>0</ismultiplier1>
-        <ismultiplier2>0</ismultiplier2>
-        <ismultiplier3>0</ismultiplier3>
-        <points>1</points>
-        <radionr>0</radionr>
-        <run1run2>1</run1run2>
-        <RoverLocation></RoverLocation>
-        <RadioInterfaced>0</RadioInterfaced>
-        <NetworkedCompNr>0</NetworkedCompNr>
-        <IsOriginal>True</IsOriginal>
-        <NetBiosName>8700K</NetBiosName>
-        <IsRunQSO>0</IsRunQSO>
-        <StationName>8700K</StationName>
-        <ID>cc186cb34185419db60f4388391bf508</ID>
-        <IsClaimedQso>1</IsClaimedQso>
-        <oldtimestamp>2023-06-30 18:00:30</oldtimestamp>
-        <oldcall>EA5EB</oldcall>
-</contactinfo>"""
+import n1mm
+import clublog
+
+config = None
 
 class EchoServerProtocol:
     def connection_made(self, transport):
         self.transport = transport
 
     def datagram_received(self, data, addr):
-        message = data.decode()
-        print('Received %s from %s' % (message, addr))
-        print('Send %s to %s' % (message, addr))
+        n1mm_xml = data.decode()
+        print('Received %s from %s' % (n1mm_xml, addr))
+
+        adif = n1mm.contact_to_adif(n1mm_xml)
+        clublog.realtime_api(
+            config['clublog']['email'], 
+            config['clublog']['password'],
+            config['clublog']['callsign'], adif)
+
+        #print('Send %s to %s' % (message, addr))
         #self.transport.sendto(data, addr)
 
 
 async def main():
+
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+
     print("Starting UDP server")
 
     # Get a reference to the event loop as we plan to use
