@@ -1,6 +1,6 @@
 # LogHub Backend
 
-This repository contains a minimal FastAPI server.
+This repository contains a simple FastAPI server with a SQLite database.
 
 ## Build and Run with Docker
 
@@ -12,5 +12,12 @@ docker build -f docker/Dockerfile -t loghub-backend .
 docker run -p 8000:8000 loghub-backend
 ```
 
-The server will be available at `http://localhost:8000/` and will respond with `{"message": "Hello World"}`.
+The server will be available at `http://localhost:8000/` and includes CRUD endpoints for QSO records:
 
+- `POST /qsos` create a QSO
+- `GET /qsos` list QSOs
+- `GET /qsos/{id}` retrieve a QSO
+- `PUT /qsos/{id}` update a QSO
+- `DELETE /qsos/{id}` remove a QSO
+
+All data is stored in a SQLite database file `qso.db` located in the working directory.
