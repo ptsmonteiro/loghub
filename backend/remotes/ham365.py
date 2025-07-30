@@ -20,3 +20,53 @@ def push_qso(api_key: str, qso: Dict) -> Dict:
     resp = requests.post(f"{BASE_URL}/qsos", headers=headers, json=qso)
     resp.raise_for_status()
     return resp.json()
+
+
+def sync_qsos(local_session, api_key: str, push: bool = False) -> None:
+    """Synchronize QSOs with Ham365."""
+
+    from sqlalchemy.orm import Session
+
+    from .. import models
+
+    if not isinstance(local_session, Session):
+        raise TypeError("local_session must be a sqlalchemy Session")
+
+    remote_qsos = fetch_qsos(api_key)
+    for data in remote_qsos:
+        qso_id = data.get("id")
+        qso = (
+            local_session.query(models.RemoteQSO)
+            .filter_by(id=qso_id, remote="ham365")
+            .first()
+        )
+        if qso:
+            qso.callsign = data.get("callsign")
+            qso.frequency = data.get("frequency")
+            qso.mode = data.get("mode")
+            qso.timestamp = data.get("timestamp")
+        else:
+            qso = models.RemoteQSO(
+                id=qso_id,
+                remote="ham365",
+                callsign=data.get("callsign"),
+                frequency=data.get("frequency"),
+                mode=data.get("mode"),
+                timestamp=data.get("timestamp"),
+            )
+            local_session.add(qso)
+
+    local_session.commit()
+
+    if push:
+        for local in local_session.query(models.QSO).all():
+            push_qso(
+                api_key,
+                {
+                    "id": local.id,
+                    "callsign": local.callsign,
+                    "frequency": local.frequency,
+                    "mode": local.mode,
+                    "timestamp": local.timestamp,
+                },
+            )
