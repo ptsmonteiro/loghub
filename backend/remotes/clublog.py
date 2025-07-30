@@ -26,7 +26,7 @@ def sync_qsos(local_session, api_key: str, push: bool = False) -> None:
     """Synchronize QSOs with Club Log.
 
     Remote QSOs are fetched via :func:`fetch_qsos` and stored in the
-    ``RemoteQSO`` table. Existing rows (matched by ``id`` and the
+    ``RemoteQSO`` table. Existing rows (matched by ``remote_id`` and the
     ``remote`` field) are updated while new ones are inserted.  When the
     ``push`` flag is provided, all local ``QSO`` entries are pushed using
     :func:`push_qso`.
@@ -44,7 +44,7 @@ def sync_qsos(local_session, api_key: str, push: bool = False) -> None:
         qso_id = data.get("id")
         qso = (
             local_session.query(models.RemoteQSO)
-            .filter_by(id=qso_id, remote="clublog")
+            .filter_by(remote_id=qso_id, remote="clublog")
             .first()
         )
         if qso:
@@ -54,7 +54,7 @@ def sync_qsos(local_session, api_key: str, push: bool = False) -> None:
             qso.timestamp = data.get("timestamp")
         else:
             qso = models.RemoteQSO(
-                id=qso_id,
+                remote_id=qso_id,
                 remote="clublog",
                 callsign=data.get("callsign"),
                 frequency=data.get("frequency"),

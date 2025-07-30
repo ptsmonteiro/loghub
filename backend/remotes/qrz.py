@@ -42,7 +42,7 @@ def sync_qsos(local_session, username: str, password: str, push: bool = False) -
         qso_id = data.get("id")
         qso = (
             local_session.query(models.RemoteQSO)
-            .filter_by(id=qso_id, remote="qrz")
+            .filter_by(remote_id=qso_id, remote="qrz")
             .first()
         )
         if qso:
@@ -52,7 +52,7 @@ def sync_qsos(local_session, username: str, password: str, push: bool = False) -
             qso.timestamp = data.get("timestamp")
         else:
             qso = models.RemoteQSO(
-                id=qso_id,
+                remote_id=qso_id,
                 remote="qrz",
                 callsign=data.get("callsign"),
                 frequency=data.get("frequency"),
