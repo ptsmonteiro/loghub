@@ -3,7 +3,7 @@ import sys
 from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from backend.interfaces import lotw
+from backend.interfaces import lotw  # noqa: E402
 
 
 def test_fetch_qsos():
