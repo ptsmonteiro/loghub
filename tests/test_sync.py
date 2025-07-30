@@ -15,7 +15,6 @@ from backend.remotes import clublog, lotw, ham365, qrz  # noqa: E402
 
 
 @pytest.fixture
-
 def db_session():
     engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
     Base.metadata.create_all(bind=engine)
