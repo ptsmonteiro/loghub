@@ -21,3 +21,4 @@ The server will be available at `http://localhost:8000/` and includes CRUD endpo
 - `DELETE /qsos/{id}` remove a QSO
 
 All data is stored in a SQLite database file `qso.db` located in the working directory.
+The application creates the required tables automatically on startup.

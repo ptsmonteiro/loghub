@@ -10,8 +10,3 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
-# Import models and create tables when this module is loaded.
-from . import models  # noqa: E402,F401
-
-Base.metadata.create_all(bind=engine)

@@ -5,9 +5,15 @@ import uvicorn
 from . import remotes
 
 from . import models, schemas
-from .database import SessionLocal
+from .database import SessionLocal, engine, Base
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    """Create database tables at application startup."""
+    Base.metadata.create_all(bind=engine)
 
 
 def get_db():
