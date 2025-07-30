@@ -46,7 +46,11 @@ def read_qso(qso_id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/qsos/{qso_id}", response_model=schemas.QSO)
-def update_qso(qso_id: int, qso_update: schemas.QSOUpdate, db: Session = Depends(get_db)):
+def update_qso(
+    qso_id: int,
+    qso_update: schemas.QSOUpdate,
+    db: Session = Depends(get_db),
+):
     qso = db.query(models.QSO).filter(models.QSO.id == qso_id).first()
     if qso is None:
         raise HTTPException(status_code=404, detail="QSO not found")

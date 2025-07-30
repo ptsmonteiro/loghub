@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+sqlalchemy
+requests
+pytest
+flake8
