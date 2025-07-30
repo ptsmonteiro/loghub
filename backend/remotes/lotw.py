@@ -1,4 +1,4 @@
-"""LoTW service API interface."""
+"""LoTW service API remote."""
 
 from typing import Dict, List
 import requests

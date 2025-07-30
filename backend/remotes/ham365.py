@@ -1,4 +1,4 @@
-"""Ham365 service API interface."""
+"""Ham365 service API remote."""
 
 from typing import Dict, List
 import requests
