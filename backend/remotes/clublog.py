@@ -1,4 +1,4 @@
-"""Club Log service API interface."""
+"""Club Log service API remote."""
 
 from typing import Dict, List
 import requests

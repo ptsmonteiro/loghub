@@ -3,11 +3,11 @@ import sys
 from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from backend.interfaces import qrz  # noqa: E402
+from backend.remotes import qrz  # noqa: E402
 
 
 def test_fetch_qsos():
-    with patch('backend.interfaces.qrz.requests.get') as mock_get:
+    with patch('backend.remotes.qrz.requests.get') as mock_get:
         mock_get.return_value.json.return_value = [{'id': 1}]
         mock_get.return_value.raise_for_status.return_value = None
         result = qrz.fetch_qsos('user', 'pass')
@@ -16,7 +16,7 @@ def test_fetch_qsos():
 
 
 def test_push_qso():
-    with patch('backend.interfaces.qrz.requests.post') as mock_post:
+    with patch('backend.remotes.qrz.requests.post') as mock_post:
         mock_post.return_value.json.return_value = {'status': 'ok'}
         mock_post.return_value.raise_for_status.return_value = None
         result = qrz.push_qso('user', 'pass', {'id': 1})

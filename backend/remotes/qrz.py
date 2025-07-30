@@ -1,4 +1,4 @@
-"""QRZ.com service API interface."""
+"""QRZ.com service API remote."""
 
 from typing import Dict, List
 import requests
