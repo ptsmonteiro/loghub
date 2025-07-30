@@ -55,6 +55,7 @@ def test_sync_qsos_writes_rows(db_session, module, args, remote):
     rows = db_session.query(models.RemoteQSO).filter_by(remote=remote).all()
     assert len(rows) == 1
     row = rows[0]
+    assert row.remote_id == 1
     assert row.callsign == "TEST"
     assert row.frequency == 14.0
     assert row.mode == "CW"
@@ -65,6 +66,7 @@ def test_sync_qsos_writes_rows(db_session, module, args, remote):
     rows = db_session.query(models.RemoteQSO).filter_by(remote=remote).all()
     assert len(rows) == 1
     row = rows[0]
+    assert row.remote_id == 1
     assert row.callsign == "NEW"
     assert row.frequency == 7.0
     assert row.mode == "SSB"

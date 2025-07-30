@@ -37,7 +37,7 @@ def sync_qsos(local_session, api_key: str, push: bool = False) -> None:
         qso_id = data.get("id")
         qso = (
             local_session.query(models.RemoteQSO)
-            .filter_by(id=qso_id, remote="ham365")
+            .filter_by(remote_id=qso_id, remote="ham365")
             .first()
         )
         if qso:
@@ -47,7 +47,7 @@ def sync_qsos(local_session, api_key: str, push: bool = False) -> None:
             qso.timestamp = data.get("timestamp")
         else:
             qso = models.RemoteQSO(
-                id=qso_id,
+                remote_id=qso_id,
                 remote="ham365",
                 callsign=data.get("callsign"),
                 frequency=data.get("frequency"),
