@@ -21,3 +21,13 @@ The server will be available at `http://localhost:8000/` and includes CRUD endpo
 - `DELETE /qsos/{id}` remove a QSO
 
 All data is stored in a SQLite database file `qso.db` located in the working directory.
+
+## Local Development
+
+To run the application or tests locally without Docker, install the Python dependencies and then run the server or `pytest` directly:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+The dependency list now includes [`httpx`](https://www.python-httpx.org/), which is used by some remotes for asynchronous HTTP calls.
