@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-sqlalchemy
-requests
-httpx
-pytest
-flake8
