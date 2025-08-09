@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from urllib.parse import urlparse, unquote
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,12 +75,33 @@ WSGI_APPLICATION = "loghub_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
+DATABASES = {}
+
+# Prefer Postgres if DATABASE_URL is provided (e.g., in Docker Compose)
+_db_url = os.environ.get("DATABASE_URL")
+if _db_url:
+    parsed = urlparse(_db_url)
+    if parsed.scheme.startswith("postgres"):
+        DATABASES["default"] = {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": (parsed.path or "/postgres").lstrip("/"),
+            "USER": unquote(parsed.username) if parsed.username else "",
+            "PASSWORD": unquote(parsed.password) if parsed.password else "",
+            "HOST": parsed.hostname or "",
+            "PORT": str(parsed.port) if parsed.port else "",
+        }
+    else:
+        # Fallback to SQLite if an unsupported scheme is provided
+        DATABASES["default"] = {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+else:
+    # Default to SQLite for local dev without Docker/DB
+    DATABASES["default"] = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}
 
 
 # Password validation
