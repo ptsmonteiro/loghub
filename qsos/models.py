@@ -41,8 +41,23 @@ class QSO(models.Model):
     # RST and other info
     rst_sent = models.CharField(max_length=8, blank=True)
     rst_rcvd = models.CharField(max_length=8, blank=True)
+    # Optional QSO end time/date
+    qso_date_off = models.DateField(null=True, blank=True, help_text="QSO_DATE_OFF (optional)")
+    time_off = models.TimeField(null=True, blank=True, help_text="TIME_OFF (optional)")
+
+    # Exchange / contest related
+    srx = models.PositiveIntegerField(null=True, blank=True, help_text="SRX (optional)")
+    srx_string = models.CharField(max_length=32, blank=True, help_text="SRX_STRING (optional)")
+    stx = models.PositiveIntegerField(null=True, blank=True, help_text="STX (optional)")
+    stx_string = models.CharField(max_length=32, blank=True, help_text="STX_STRING (optional)")
     country = models.CharField(max_length=64, blank=True)
     gridsquare = models.CharField(max_length=16, blank=True, help_text="Grid (worked station)")
+    name = models.CharField(max_length=64, blank=True, help_text="NAME (operator name of station worked)")
+    tx_pwr = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, help_text="TX_PWR in watts")
+    dxcc = models.PositiveIntegerField(null=True, blank=True, help_text="DXCC entity code (worked)")
+    cq_zone = models.PositiveIntegerField(null=True, blank=True, help_text="CQ zone (worked)")
+    itu_zone = models.PositiveIntegerField(null=True, blank=True, help_text="ITU zone (worked)")
+    iota = models.CharField(max_length=10, blank=True, help_text="IOTA reference (e.g., EU-005)")
 
     # Station location (MY_*)
     my_dxcc = models.PositiveIntegerField(null=True, blank=True, help_text="MY_DXCC code")
@@ -52,6 +67,22 @@ class QSO(models.Model):
     my_vucc_grids = models.CharField(max_length=64, blank=True)
     my_cq_zone = models.PositiveIntegerField(null=True, blank=True)
     my_itu_zone = models.PositiveIntegerField(null=True, blank=True)
+    my_name = models.CharField(max_length=64, blank=True, help_text="MY_NAME (operator name)")
+
+    # QSLing fields (LoTW focus)
+    lotw_qsl_rcvd = models.CharField(max_length=1, blank=True, help_text="LOTW_QSL_RCVD (Y/N/R/I/V)")
+    lotw_qsl_rcvd_date = models.DateField(null=True, blank=True)
+    lotw_qsl_sent = models.CharField(max_length=1, blank=True, help_text="LOTW_QSL_SENT (Y/N/R/I/V)")
+    lotw_qsl_sent_date = models.DateField(null=True, blank=True)
+
+    # Programs (ADIF-compatible) — covers POTA/SOTA via SIG fields; SOTA also has dedicated fields in ADIF
+    sig = models.CharField(max_length=16, blank=True, help_text="SIG (e.g., POTA/SOTA)")
+    sig_info = models.CharField(max_length=32, blank=True, help_text="SIG_INFO (e.g., park/summit ref)")
+    my_sig = models.CharField(max_length=16, blank=True, help_text="MY_SIG (e.g., POTA/SOTA)")
+    my_sig_info = models.CharField(max_length=32, blank=True, help_text="MY_SIG_INFO (e.g., park/summit ref)")
+    # SOTA has dedicated fields in ADIF
+    sota_ref = models.CharField(max_length=16, blank=True, help_text="SOTA_REF (worked station)")
+    my_sota_ref = models.CharField(max_length=16, blank=True, help_text="MY_SOTA_REF")
 
     comment = models.TextField(blank=True)
 
