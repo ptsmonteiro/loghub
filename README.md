@@ -47,7 +47,7 @@ Docker (web + Postgres + Tailwind)
   docker compose up --build
 
 - Open http://localhost:8000
-- Tailwind CSS is built by the `tailwind` service (installs dev deps via `npm ci`), outputting to `static/css/tailwind.css`.
+- Tailwind runs inside the web container: it performs an initial build and then watches, writing to `static/css/tailwind.css`.
 
 Tailwind CLI (local)
 
