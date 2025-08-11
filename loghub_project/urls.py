@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path
 
+from logbook.views import upload_adif
+
 
 def hello(request):
     return HttpResponse("Hello, world")
@@ -26,5 +28,6 @@ def hello(request):
 
 urlpatterns = [
     path("", hello, name="hello"),
+    path("api/upload/", upload_adif, name="upload_adif"),
     path("admin/", admin.site.urls),
 ]
