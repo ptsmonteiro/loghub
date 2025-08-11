@@ -10,7 +10,13 @@
   </head>
   <body hx-boost="true">
     <header class="toolbar">
-      <h1 style="margin:0"><a href="/qsos/" style="text-decoration:none;color:inherit">LogHub</a></h1>
+      <h1 style="margin:0">
+        <!-- Optional Google Fonts fallback for a CRT-like look -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+        <a href="/qsos/" style="text-decoration:none" class="logo-font">LogHub</a>
+      </h1>
       <nav class="stack">
         <a class="btn" href="/qsos/">QSOs</a>
         <a class="btn" href="/admin/">Admin</a>

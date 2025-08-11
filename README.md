@@ -60,6 +60,20 @@ CI
 
 GitHub Actions workflow `.github/workflows/ci.yml` runs on Python 3.12: Django checks, migrations (SQLite), and pytest on pushes and PRs.
 
+Logo font (scanline)
+
+- The header now uses a dedicated logo font stack:
+  - First tries a locally bundled scanline font via `@font-face` named `LogHubScanline`.
+  - Falls back to Google Fonts `VT323` (CRT‑style), then monospace.
+- To use a real scanline font, drop licensed font files into `static/fonts/` with these names:
+
+  static/fonts/loghub-scanline.woff2
+  static/fonts/loghub-scanline.woff
+  static/fonts/loghub-scanline.ttf
+
+  And reload. The `logo-font` class in `assets/styles.css` will pick it up.
+- If you prefer a different filename, update the `@font-face` src URLs in `assets/styles.css` accordingly.
+
 Running tests with Docker (recommended for parity)
 
 - One-off test run using the same image and Postgres as `web`:
