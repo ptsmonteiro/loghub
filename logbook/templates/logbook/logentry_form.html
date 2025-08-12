@@ -19,19 +19,22 @@
     .form-section h3 { margin: 0 0 8px 0; font-size: 1rem; color: #111827; }
     .field { margin: 0; }
     .hint { color:#6b7280; font-size: .85em; }
-    .optional-picker { border: 1px dashed #d1d5db; padding: 12px; border-radius: 8px; background:#f9fafb; }
-    .optional-fields { margin-top: 12px; }
     .optional-field { display: none; }
     .optional-field.visible { display: block; }
     .inline-actions { display:flex; align-items:center; gap:8px; }
     .btn-ghost { border-color:#d1d5db; color:#374151; background:#fff; }
+    .toggle-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; }
+    .toggle-btn { display:inline-flex; align-items:center; justify-content:center; padding: 6px 10px; border:1px solid #d1d5db; border-radius: 8px; background:#fff; color:#374151; cursor:pointer; user-select:none; }
+    .toggle-btn[aria-pressed="true"] { background:#065f46; color:#fff; border-color:#065f46; }
+    .toggle-toolbar { display:flex; gap:8px; align-items:end; justify-content:space-between; flex-wrap:wrap; }
+    .srch { width:100%; max-width:460px; }
   </style>
 
   <form method="post" novalidate>
     {% csrf_token %}
 
     {# Baseline fields (always shown) #}
-    <div class="grid-fluid">
+    <div class="grid-fluid" id="main-grid">
       <div class="field" id="field-callsign">
         <label>{{ form.callsign.label_tag }}</label>
         {{ form.callsign }}
@@ -62,6 +65,37 @@
         {% if form.mode.help_text %}<small>{{ form.mode.help_text }}</small>{% endif %}
         {% for error in form.mode.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
       </div>
+      {% comment %} Render additional model fields inline; hidden unless value {% endcomment %}
+      {% for f in optional_fields %}
+        {% with field=form|attr:f.name %}
+          {% if field %}
+          <div class="field optional-field{% if f.checked %} visible{% endif %}" id="field-{{f.name}}-opt" data-name="{{f.name}}">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
+              <label style="margin:0;">{{ field.label_tag }}</label>
+              <button type="button" class="btn btn-ghost" data-remove-opt="{{f.name}}" title="Hide field">Hide</button>
+            </div>
+            {{ field }}
+            {% if field.help_text %}<small class="hint">{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+      {% endfor %}
+      {% comment %} Render ALL extras from catalog; visible only if value exists or checked {% endcomment %}
+      {% for ex in extras_catalog %}
+        {% with tag=ex.tag label=ex.label %}
+        {% with val=extras_values|dict_get:tag %}
+        <div class="field optional-field{% if val %} visible{% elif ex.checked %} visible{% endif %}" id="extra-{{ tag|lower }}-opt" data-extra="{{ tag }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
+            <label style="margin:0;">{{ label }}</label>
+            <button type="button" class="btn btn-ghost" data-hide-extra="{{ tag }}" title="Hide field">Hide</button>
+          </div>
+          <input type="hidden" name="extra_key" value="{{ tag }}" />
+          <input name="extra_val" value="{{ val }}" />
+        </div>
+        {% endwith %}
+        {% endwith %}
+      {% endfor %}
     </div>
 
     
@@ -80,55 +114,20 @@
           </select>
         </label>
       </div>
-      <div class="optional-picker">
-        <div class="grid-2" style="grid-template-columns: minmax(300px, 1fr) auto; align-items: end;">
-          <div>
-            <input id="add-opt-input" list="opt-fields-list" placeholder="Search to add a field"/>
-            <datalist id="opt-fields-list">
-              {% for f in optional_fields %}
-                <option value="{{ f.label }}"></option>
-              {% endfor %}
-              {% for tag in adif_suggestions %}
-                <option value="{{ tag }}"></option>
-              {% endfor %}
-            </datalist>
+      <div class="form-section" style="padding:12px; margin: 0 0 12px 0; background:#f9fafb; border:1px dashed #d1d5db;">
+        <div class="toggle-toolbar">
+          <div style="flex:1; min-width:260px;">
+            <input id="toggle-search" class="srch" placeholder="Search additional fields (label or name)" />
+            <div class="hint">Toggle fields on/off. Search narrows the list.</div>
           </div>
           <div class="inline-actions">
-            <button type="button" class="btn btn-ghost" id="add-opt-btn">Add</button>
+            <button type="button" class="btn btn-ghost" id="toggle-all-on">Show All</button>
+            <button type="button" class="btn btn-ghost" id="toggle-all-off">Hide All</button>
           </div>
         </div>
-        <div class="hint">Pick a model field to reveal it, or type an ADIF tag to create a new field. Duplicates are ignored. Empty fields are not saved.</div>
+        <div id="toggle-list" class="toggle-list" aria-label="Additional fields toggles"></div>
       </div>
-      <div class="optional-fields">
-        <div id="optional-grid" class="grid-fluid">
-          {% for f in optional_fields %}
-            {% with field=form|attr:f.name %}
-              {% if field %}
-              <div class="field optional-field{% if f.checked %} visible{% endif %}" id="field-{{f.name}}-opt" data-name="{{f.name}}">
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
-                  <label style="margin:0;">{{ field.label_tag }}</label>
-                  <button type="button" class="btn btn-ghost" data-remove-opt="{{f.name}}" title="Remove field">Remove</button>
-                </div>
-                {{ field }}
-                {% if field.help_text %}<small class="hint">{{ field.help_text }}</small>{% endif %}
-                {% for error in field.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
-              </div>
-              {% endif %}
-            {% endwith %}
-          {% endfor %}
-          {# Render existing extras as normal fields #}
-          {% for item in extras_items %}
-            <div class="field optional-field visible" id="extra-{{ item.key|lower }}-opt" data-extra="{{ item.key|upper }}">
-              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
-                <label style="margin:0;">{{ item.key|upper }}</label>
-                <button type="button" class="btn btn-ghost" data-remove-extra>Remove</button>
-              </div>
-              <input type="hidden" name="extra_key" value="{{ item.key|upper }}" />
-              <input name="extra_val" value="{{ item.val }}" />
-            </div>
-          {% endfor %}
-        </div>
-      </div>
+      {# Extras add UI removed: all model fields are pre-rendered and toggleable #}
     </div>
 
     
@@ -142,7 +141,10 @@
   <script>
     // Catalog of optional fields from server
     const OPTIONAL_CATALOG = [
-      {% for f in optional_fields %}{ name: "{{ f.name }}", label: "{{ f.label }}" }{% if not forloop.last %},{% endif %}{% endfor %}
+      {% for f in optional_fields %}{ name: "{{ f.name }}", label: "{{ f.label }}", checked: {{ f.checked|yesno:"true,false" }} }{% if not forloop.last %},{% endif %}{% endfor %}
+    ];
+    const EXTRAS_CATALOG = [
+      {% for ex in extras_catalog %}{ tag: "{{ ex.tag }}", label: "{{ ex.label }}", checked: {{ ex.checked|yesno:"true,false" }} }{% if not forloop.last %},{% endif %}{% endfor %}
     ];
 
     // Lightweight, UI-only operation profiles
@@ -167,6 +169,7 @@
       const block = document.getElementById('field-' + name + '-opt');
       if (!block) return;
       block.querySelectorAll('input, select, textarea').forEach(el => {
+        if (el.tagName === 'INPUT' && el.type === 'hidden') return; // don't clear hidden keys
         if (el.tagName === 'SELECT') {
           el.selectedIndex = 0;
         } else {
@@ -191,72 +194,151 @@
       return (input.value || '').trim() !== '';
     }
 
+    // Extras helpers
+    function showExtraByTag(tag) {
+      const block = document.getElementById('extra-' + tag.toLowerCase() + '-opt');
+      if (!block) return false;
+      block.classList.add('visible');
+      const input = block.querySelector('input[name="extra_val"]');
+      if (input) input.focus();
+      return true;
+    }
+    function clearAndHideExtra(tag) {
+      const block = document.getElementById('extra-' + tag.toLowerCase() + '-opt');
+      if (!block) return;
+      const val = block.querySelector('input[name="extra_val"]');
+      if (val) val.value = '';
+      block.classList.remove('visible');
+    }
+    function extraHasValue(tag) {
+      const block = document.getElementById('extra-' + tag.toLowerCase() + '-opt');
+      if (!block) return false;
+      const val = block.querySelector('input[name="extra_val"]');
+      return !!(val && (val.value || '').trim() !== '');
+    }
+
     function applyProfile(key) {
       const wanted = new Set(PROFILES[key] || []);
       OPTIONAL_CATALOG.forEach(it => {
         const { name } = it;
         if (wanted.has(name)) {
           showOptionalFieldByName(name);
+          const btn = document.querySelector('#toggle-list .toggle-btn[data-type="opt"][data-key="' + name + '"]');
+          if (btn) btn.setAttribute('aria-pressed', 'true');
         } else {
           // Hide only if no current value to avoid surprising the user
-          if (!fieldHasValue(name)) hideOptionalField(name);
+          if (!fieldHasValue(name)) {
+            hideOptionalField(name);
+            const btn = document.querySelector('#toggle-list .toggle-btn[data-type="opt"][data-key="' + name + '"]');
+            if (btn) btn.setAttribute('aria-pressed', 'false');
+          }
         }
       });
       try { localStorage.setItem('loghub.profile', key); } catch (e) {}
     }
 
-    document.getElementById('add-opt-btn').addEventListener('click', () => {
-      const inp = document.getElementById('add-opt-input');
-      const raw = (inp.value || '').trim();
-      if (!raw) return;
-      const q = raw.toLowerCase();
-      // Try to match a known model field by label or name
-      const found = OPTIONAL_CATALOG.find(it => it.label.toLowerCase() === q) || OPTIONAL_CATALOG.find(it => it.name.toLowerCase() === q) || OPTIONAL_CATALOG.find(it => it.label.toLowerCase().includes(q));
-      if (found) {
-        const block = document.getElementById('field-' + found.name + '-opt');
-        if (block && !block.classList.contains('visible')) {
-          showOptionalFieldByName(found.name);
+    // Build toggle buttons UI
+    (function buildToggles() {
+      const list = document.getElementById('toggle-list');
+      if (!list) return;
+      const frag = document.createDocumentFragment();
+      const makeBtn = (key, label, checked, type) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'toggle-btn';
+        btn.setAttribute('data-type', type);
+        btn.setAttribute('data-key', key);
+        btn.setAttribute('aria-pressed', checked ? 'true' : 'false');
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          const active = btn.getAttribute('aria-pressed') === 'true';
+          if (active) {
+            if (type === 'opt') clearAndHideOptionalField(key); else clearAndHideExtra(key);
+            btn.setAttribute('aria-pressed', 'false');
+          } else {
+            if (type === 'opt') showOptionalFieldByName(key); else showExtraByTag(key);
+            btn.setAttribute('aria-pressed', 'true');
+          }
+        });
+        return btn;
+      };
+      OPTIONAL_CATALOG.forEach(it => frag.appendChild(makeBtn(it.name, it.label, !!it.checked, 'opt')));
+      EXTRAS_CATALOG.forEach(it => frag.appendChild(makeBtn(it.tag, it.label, !!it.checked, 'extra')));
+      list.appendChild(frag);
+    })();
+
+    // Keep toggle state in sync with visible fields
+    function syncToggleStates() {
+      document.querySelectorAll('#toggle-list .toggle-btn').forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        const type = btn.getAttribute('data-type');
+        if (!key || !type) return;
+        let active = false;
+        if (type === 'opt') {
+          const block = document.getElementById('field-' + key + '-opt');
+          active = !!(block && block.classList.contains('visible'));
+        } else {
+          const block = document.getElementById('extra-' + key.toLowerCase() + '-opt');
+          active = !!(block && block.classList.contains('visible'));
         }
-        inp.value = '';
-        return;
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    // Toggle search filter
+    (function wireSearch() {
+      const inp = document.getElementById('toggle-search');
+      const list = document.getElementById('toggle-list');
+      if (!inp || !list) return;
+      function applyFilter() {
+        const q = (inp.value || '').trim().toLowerCase();
+        list.querySelectorAll('.toggle-btn').forEach(btn => {
+          const key = btn.getAttribute('data-key') || '';
+          const label = btn.textContent || '';
+          const hit = !q || key.toLowerCase().includes(q) || label.toLowerCase().includes(q);
+          btn.style.display = hit ? '' : 'none';
+        });
       }
-      // Treat as ADIF extra key; create a normal-looking field block if not present
-      const key = raw.toUpperCase();
-      if (document.querySelector('[data-extra="' + key + '"]')) {
-        inp.value = '';
-        return;
-      }
-      const grid = document.getElementById('optional-grid');
-      const wrap = document.createElement('div');
-      wrap.className = 'field optional-field visible';
-      wrap.id = 'extra-' + key.toLowerCase() + '-opt';
-      wrap.setAttribute('data-extra', key);
-      wrap.innerHTML = `
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
-          <label style="margin:0;">${key}</label>
-          <button type="button" class="btn btn-ghost" data-remove-extra>Remove</button>
-        </div>
-        <input type="hidden" name="extra_key" value="${key}" />
-        <input name="extra_val" value="" />
-      `;
-      grid.appendChild(wrap);
-      inp.value = '';
+      inp.addEventListener('input', applyFilter);
+      applyFilter();
+    })();
+
+    // Show/Hide all helpers
+    document.getElementById('toggle-all-on').addEventListener('click', () => {
+      document.querySelectorAll('#toggle-list .toggle-btn').forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        const type = btn.getAttribute('data-type');
+        if (!key || !type) return;
+        if (type === 'opt') showOptionalFieldByName(key); else showExtraByTag(key);
+        btn.setAttribute('aria-pressed', 'true');
+      });
+    });
+    document.getElementById('toggle-all-off').addEventListener('click', () => {
+      document.querySelectorAll('#toggle-list .toggle-btn').forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        const type = btn.getAttribute('data-type');
+        if (!key || !type) return;
+        if (type === 'opt') clearAndHideOptionalField(key); else clearAndHideExtra(key);
+        btn.setAttribute('aria-pressed', 'false');
+      });
     });
 
-    // Remove buttons for optional fields
+    // No extras add UI: all model fields are pre-rendered and toggleable
+
+    // Hide buttons for optional/extras fields
     document.addEventListener('click', (e) => {
       const t = e.target;
-      if (t && t.matches('button[data-remove-opt]')) {
-        const name = t.getAttribute('data-remove-opt');
+      if (t && t.matches('button[data-remove-opt], button[data-hide-opt]')) {
+        const name = t.getAttribute('data-remove-opt') || t.getAttribute('data-hide-opt');
         clearAndHideOptionalField(name);
       }
-      if (t && t.matches('button[data-remove-extra]')) {
-        const row = t.closest('[data-extra]');
-        if (row) row.remove();
+      if (t && t.matches('button[data-remove-extra], button[data-hide-extra]')) {
+        const tag = t.getAttribute('data-remove-extra') || t.getAttribute('data-hide-extra');
+        clearAndHideExtra(tag);
       }
     });
 
-    // Removed separate extras add handler; unified in add-opt-btn
+    // Toggle UI controls visibility of additional fields; extras managed above
 
     // Profile init and change handler
     (function initProfile() {
@@ -267,9 +349,11 @@
         if (saved && PROFILES[saved]) {
           sel.value = saved;
           applyProfile(saved);
+          syncToggleStates();
         }
       } catch (e) {}
-      sel.addEventListener('change', () => applyProfile(sel.value));
+      sel.addEventListener('change', () => { applyProfile(sel.value); syncToggleStates(); });
+      syncToggleStates();
     })();
   </script>
 {% endblock %}

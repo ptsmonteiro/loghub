@@ -10,7 +10,7 @@ from .adif import queryset_to_adif
 from .forms_import import ADIFUploadForm
 from .imports import gzip_bytes, parse_adif_to_staged, finalize_import, compute_sha256
 from .adif_fields import CORE_TAGS
-from .adif_catalog import tag_suggestions
+from .adif_catalog import tag_suggestions, ADIF_CATALOG
 from .models import LogImport, StagedEntry
 
 
@@ -78,10 +78,17 @@ class LogEntryCreateView(CreateView):
                 checked = bool(val)
             enriched.append({"name": name, "label": label, "checked": checked})
         ctx["optional_fields"] = enriched
-        # For create view, no existing extras
-        ctx["extras_items"] = []
-        # Suggestions for ADIF extras picker
-        ctx["adif_suggestions"] = tag_suggestions(300)
+        # Build extras catalog from ADIF catalog, excluding core tags
+        from .adif_fields import CORE_TAGS
+        extras_catalog: list[dict[str, object]] = []
+        for tag, meta in ADIF_CATALOG.items():
+            if tag in CORE_TAGS:
+                continue
+            label = getattr(meta, "label", None) or tag.replace("_", " ").title()
+            extras_catalog.append({"tag": tag, "label": label, "checked": False})
+        ctx["extras_catalog"] = extras_catalog
+        # No initial extras values for create
+        ctx["extras_values"] = {}
         return ctx
 
 
@@ -140,14 +147,35 @@ class LogEntryUpdateView(UpdateView):
                 checked = bool(val)
             enriched.append({"name": name, "label": label, "checked": checked})
         ctx["optional_fields"] = enriched
-        # Existing extras become visible as individual fields
-        extras_items: list[dict[str, str]] = []
+        # Extras catalog: all known tags not in core + unknown existing extras
+        from .adif_fields import CORE_TAGS
+        extras_catalog: list[dict[str, object]] = []
+        seen: set[str] = set()
+        # Start with catalog entries
+        for tag, meta in ADIF_CATALOG.items():
+            if tag in CORE_TAGS:
+                continue
+            label = getattr(meta, "label", None) or tag.replace("_", " ").title()
+            extras_catalog.append({"tag": tag, "label": label, "checked": False})
+            seen.add(tag)
+        # Include any existing extras not in catalog for retro-compat
+        extras_values: dict[str, str] = {}
         inst = self.object
         if inst and getattr(inst, "extras", None) and inst.extras.data:
             for k, v in inst.extras.data.items():
-                extras_items.append({"key": str(k), "val": str(v)})
-        ctx["extras_items"] = extras_items
-        ctx["adif_suggestions"] = tag_suggestions(300)
+                tag = str(k).upper()
+                extras_values[tag] = str(v)
+                if tag not in seen:
+                    label = tag.replace("_", " ").title()
+                    extras_catalog.append({"tag": tag, "label": label, "checked": True})
+                else:
+                    # Mark in-catalog items as checked when value present
+                    for it in extras_catalog:
+                        if it["tag"] == tag:
+                            it["checked"] = True
+                            break
+        ctx["extras_catalog"] = extras_catalog
+        ctx["extras_values"] = extras_values
         return ctx
 
 
