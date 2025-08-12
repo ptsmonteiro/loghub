@@ -84,7 +84,10 @@ class QSO(models.Model):
     sota_ref = models.CharField(max_length=16, blank=True, help_text="SOTA_REF (worked station)")
     my_sota_ref = models.CharField(max_length=16, blank=True, help_text="MY_SOTA_REF")
 
-    comment = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
+
+    # Link to upload/import batch this QSO came from
+    upload = models.ForeignKey('LogImport', related_name='qsos', null=True, blank=True, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -187,3 +190,47 @@ class QSO(models.Model):
         # Ensure validation and derivations run on save from any path
         self.full_clean()
         return super().save(*args, **kwargs)
+
+
+class QSOExtras(models.Model):
+    qso = models.OneToOneField(QSO, related_name="extras", on_delete=models.CASCADE)
+    data = models.JSONField(default=dict, blank=True, help_text="Sparse ADIF fields not in core schema")
+
+    def __str__(self) -> str:  # pragma: no cover - trivial
+        return f"Extras for QSO {self.qso_id}"
+
+
+class LogImport(models.Model):
+    KIND_FILE = "file"
+    KIND_SERVICE = "service"
+    KIND_CHOICES = (
+        (KIND_FILE, "File Upload"),
+        (KIND_SERVICE, "Service Import"),
+    )
+
+    FORMAT_ADIF = "adif"
+    FORMAT_CABRILLO = "cabrillo"
+    FORMAT_OTHER = "other"
+    FORMAT_CHOICES = (
+        (FORMAT_ADIF, "ADIF"),
+        (FORMAT_CABRILLO, "Cabrillo"),
+        (FORMAT_OTHER, "Other"),
+    )
+
+    kind = models.CharField(max_length=16, choices=KIND_CHOICES)
+    format = models.CharField(max_length=16, choices=FORMAT_CHOICES)
+    provider = models.CharField(max_length=32, blank=True, help_text="If kind=service, e.g., LOTW, QRZ, ClubLog")
+    original_filename = models.CharField(max_length=255, blank=True)
+    content_type = models.CharField(max_length=100, blank=True)
+    size_bytes = models.BigIntegerField(null=True, blank=True)
+    sha256 = models.CharField(max_length=64, blank=True)
+    station_callsign = models.CharField(max_length=20, blank=True)
+    notes = models.TextField(blank=True)
+    meta = models.JSONField(default=dict, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    imported_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self) -> str:  # pragma: no cover - trivial
+        label = self.original_filename or self.provider or self.get_format_display()
+        return f"{self.get_kind_display()} - {label}"

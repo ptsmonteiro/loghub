@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import QSOForm
-from .models import QSO
+from .models import QSO, QSOExtras
 from .adif import queryset_to_adif
 
 
@@ -21,11 +21,28 @@ class QSOCreateView(CreateView):
     form_class = QSOForm
     success_url = reverse_lazy("qsos:list")
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        extras = form.cleaned_data.get("extras")
+        if extras:
+            QSOExtras.objects.update_or_create(qso=self.object, defaults={"data": extras})
+        return response
+
 
 class QSOUpdateView(UpdateView):
     model = QSO
     form_class = QSOForm
     success_url = reverse_lazy("qsos:list")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        extras = form.cleaned_data.get("extras")
+        if extras:
+            QSOExtras.objects.update_or_create(qso=self.object, defaults={"data": extras})
+        else:
+            # If empty extras provided, remove existing extras to keep storage lean
+            QSOExtras.objects.filter(qso=self.object).delete()
+        return response
 
 
 class QSODeleteView(DeleteView):

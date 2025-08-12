@@ -4,6 +4,7 @@ from .models import QSO
 
 
 class QSOForm(forms.ModelForm):
+    extras = forms.JSONField(required=False, help_text="Optional: additional ADIF fields as a JSON object")
     class Meta:
         model = QSO
         fields = [
@@ -54,7 +55,7 @@ class QSOForm(forms.ModelForm):
             "lotw_qsl_rcvd_date",
             "lotw_qsl_sent",
             "lotw_qsl_sent_date",
-            "comment",
+            "notes",
         ]
         widgets = {
             "qso_date": forms.DateInput(attrs={"type": "date"}),
@@ -63,5 +64,11 @@ class QSOForm(forms.ModelForm):
             "time_off": forms.TimeInput(attrs={"type": "time"}),
             "lotw_qsl_rcvd_date": forms.DateInput(attrs={"type": "date"}),
             "lotw_qsl_sent_date": forms.DateInput(attrs={"type": "date"}),
-            "comment": forms.Textarea(attrs={"rows": 3}),
+            "notes": forms.Textarea(attrs={"rows": 3}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        inst = kwargs.get("instance") or getattr(self, "instance", None)
+        if inst and getattr(inst, "extras", None):
+            self.fields["extras"].initial = inst.extras.data

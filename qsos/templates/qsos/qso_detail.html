@@ -34,9 +34,21 @@
     <tr><th>MY_VUCC_GRIDS</th><td>{{ object.my_vucc_grids }}</td></tr>
     <tr><th>MY_CQ_ZONE</th><td>{{ object.my_cq_zone }}</td></tr>
     <tr><th>MY_ITU_ZONE</th><td>{{ object.my_itu_zone }}</td></tr>
-    <tr><th>Comment</th><td>{{ object.comment }}</td></tr>
+    <tr><th>Notes</th><td>{{ object.notes }}</td></tr>
   </tbody>
 </table>
+
+{% if object.extras and object.extras.data %}
+<h3>Additional ADIF Fields</h3>
+<table>
+  <thead><tr><th>Field</th><th>Value</th></tr></thead>
+  <tbody>
+    {% for k, v in object.extras.data.items %}
+      <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 
 <p><a class="btn" href="{% url 'qsos:list' %}">Back</a></p>
 {% endblock %}
