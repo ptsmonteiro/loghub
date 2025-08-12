@@ -1,0 +1,754 @@
+{
+  "ADDRESS": {
+    "label": "Address",
+    "type": "str"
+  },
+  "ADDRESS_INTL": {
+    "label": "Address Intl",
+    "type": "str"
+  },
+  "ADIF_VER": {
+    "label": "Adif Ver",
+    "type": "str"
+  },
+  "AGE": {
+    "label": "Age",
+    "type": "float"
+  },
+  "ALTITUDE": {
+    "label": "Altitude",
+    "type": "float"
+  },
+  "ANT_AZ": {
+    "label": "Ant Az",
+    "type": "float"
+  },
+  "ANT_EL": {
+    "label": "Ant El",
+    "type": "float"
+  },
+  "ANT_PATH": {
+    "label": "Ant Path",
+    "type": "str"
+  },
+  "APP": {
+    "label": "App",
+    "type": "str"
+  },
+  "ARRL_SECT": {
+    "label": "Arrl Sect",
+    "type": "str"
+  },
+  "AWARD_GRANTED": {
+    "label": "Award Granted",
+    "type": "str"
+  },
+  "AWARD_SUBMITTED": {
+    "label": "Award Submitted",
+    "type": "str"
+  },
+  "A_INDEX": {
+    "label": "A Index",
+    "type": "float"
+  },
+  "BAND": {
+    "label": "Band",
+    "type": "str"
+  },
+  "BAND_RX": {
+    "label": "Band Rx",
+    "type": "str"
+  },
+  "CALL": {
+    "label": "Call",
+    "type": "str"
+  },
+  "CHECK": {
+    "label": "Check",
+    "type": "str"
+  },
+  "CLASS": {
+    "label": "Class",
+    "type": "str"
+  },
+  "CLUBLOG_QSO_UPLOAD_DATE": {
+    "label": "Clublog Qso Upload Date",
+    "type": "date"
+  },
+  "CLUBLOG_QSO_UPLOAD_STATUS": {
+    "label": "Clublog Qso Upload Status",
+    "type": "str"
+  },
+  "CNTY": {
+    "label": "Cnty",
+    "type": "str"
+  },
+  "CNTY_ALT": {
+    "label": "Cnty Alt",
+    "type": "str"
+  },
+  "COMMENT": {
+    "label": "Comment",
+    "type": "str"
+  },
+  "COMMENT_INTL": {
+    "label": "Comment Intl",
+    "type": "str"
+  },
+  "CONT": {
+    "label": "Cont",
+    "type": "str"
+  },
+  "CONTACTED_OP": {
+    "label": "Contacted Op",
+    "type": "str"
+  },
+  "CONTEST_ID": {
+    "label": "Contest Id",
+    "type": "str"
+  },
+  "COUNTRY": {
+    "label": "Country",
+    "type": "str"
+  },
+  "COUNTRY_INTL": {
+    "label": "Country Intl",
+    "type": "str"
+  },
+  "CQZ": {
+    "label": "Cqz",
+    "type": "int"
+  },
+  "CREATED_TIMESTAMP": {
+    "label": "Created Timestamp",
+    "type": "str"
+  },
+  "CREDIT_GRANTED": {
+    "label": "Credit Granted",
+    "type": "str"
+  },
+  "CREDIT_SUBMITTED": {
+    "label": "Credit Submitted",
+    "type": "str"
+  },
+  "DARC_DOK": {
+    "label": "Darc Dok",
+    "type": "str"
+  },
+  "DCL_QSLRDATE": {
+    "label": "Dcl Qslrdate",
+    "type": "date"
+  },
+  "DCL_QSLSDATE": {
+    "label": "Dcl Qslsdate",
+    "type": "date"
+  },
+  "DCL_QSL_RCVD": {
+    "label": "Dcl Qsl Rcvd",
+    "type": "str"
+  },
+  "DCL_QSL_SENT": {
+    "label": "Dcl Qsl Sent",
+    "type": "str"
+  },
+  "DISTANCE": {
+    "label": "Distance",
+    "type": "float"
+  },
+  "DXCC": {
+    "label": "Dxcc",
+    "type": "str"
+  },
+  "EMAIL": {
+    "label": "Email",
+    "type": "str"
+  },
+  "EQSL_QSLRDATE": {
+    "label": "Eqsl Qslrdate",
+    "type": "date"
+  },
+  "EQSL_QSLSDATE": {
+    "label": "Eqsl Qslsdate",
+    "type": "date"
+  },
+  "EQSL_QSL_RCVD": {
+    "label": "Eqsl Qsl Rcvd",
+    "type": "str"
+  },
+  "EQSL_QSL_SENT": {
+    "label": "Eqsl Qsl Sent",
+    "type": "str"
+  },
+  "EQ_CALL": {
+    "label": "Eq Call",
+    "type": "str"
+  },
+  "FISTS": {
+    "label": "Fists",
+    "type": "int"
+  },
+  "FISTS_CC": {
+    "label": "Fists Cc",
+    "type": "int"
+  },
+  "FORCE_INIT": {
+    "enum": [
+      "Y",
+      "N"
+    ],
+    "label": "Force Init",
+    "type": "enum"
+  },
+  "FREQ": {
+    "label": "Freq",
+    "type": "float"
+  },
+  "FREQ_RX": {
+    "label": "Freq Rx",
+    "type": "float"
+  },
+  "GRIDSQUARE": {
+    "label": "Gridsquare",
+    "type": "str"
+  },
+  "GRIDSQUARE_EXT": {
+    "label": "Gridsquare Ext",
+    "type": "str"
+  },
+  "HAMLOGEU_QSO_UPLOAD_DATE": {
+    "label": "Hamlogeu Qso Upload Date",
+    "type": "date"
+  },
+  "HAMLOGEU_QSO_UPLOAD_STATUS": {
+    "label": "Hamlogeu Qso Upload Status",
+    "type": "str"
+  },
+  "HAMQTH_QSO_UPLOAD_DATE": {
+    "label": "Hamqth Qso Upload Date",
+    "type": "date"
+  },
+  "HAMQTH_QSO_UPLOAD_STATUS": {
+    "label": "Hamqth Qso Upload Status",
+    "type": "str"
+  },
+  "HRDLOG_QSO_UPLOAD_DATE": {
+    "label": "Hrdlog Qso Upload Date",
+    "type": "date"
+  },
+  "HRDLOG_QSO_UPLOAD_STATUS": {
+    "label": "Hrdlog Qso Upload Status",
+    "type": "str"
+  },
+  "IOTA": {
+    "label": "Iota",
+    "type": "str"
+  },
+  "IOTA_ISLAND_ID": {
+    "label": "Iota Island Id",
+    "type": "int"
+  },
+  "ITUZ": {
+    "label": "Ituz",
+    "type": "int"
+  },
+  "K_INDEX": {
+    "label": "K Index",
+    "type": "str"
+  },
+  "LAT": {
+    "label": "Lat",
+    "type": "str"
+  },
+  "LON": {
+    "label": "Lon",
+    "type": "str"
+  },
+  "LOTW_QSLRDATE": {
+    "label": "Lotw Qslrdate",
+    "type": "date"
+  },
+  "LOTW_QSLSDATE": {
+    "label": "Lotw Qslsdate",
+    "type": "date"
+  },
+  "LOTW_QSL_RCVD": {
+    "label": "Lotw Qsl Rcvd",
+    "type": "str"
+  },
+  "LOTW_QSL_SENT": {
+    "label": "Lotw Qsl Sent",
+    "type": "str"
+  },
+  "MAX_BURSTS": {
+    "label": "Max Bursts",
+    "type": "float"
+  },
+  "MODE": {
+    "label": "Mode",
+    "type": "str"
+  },
+  "MORSE_KEY_INFO": {
+    "label": "Morse Key Info",
+    "type": "str"
+  },
+  "MORSE_KEY_TYPE": {
+    "label": "Morse Key Type",
+    "type": "str"
+  },
+  "MS_SHOWER": {
+    "label": "Ms Shower",
+    "type": "str"
+  },
+  "MY_ALTITUDE": {
+    "label": "My Altitude",
+    "type": "float"
+  },
+  "MY_ANTENNA": {
+    "label": "My Antenna",
+    "type": "str"
+  },
+  "MY_ANTENNA_INTL": {
+    "label": "My Antenna Intl",
+    "type": "str"
+  },
+  "MY_ARRL_SECT": {
+    "label": "My Arrl Sect",
+    "type": "str"
+  },
+  "MY_CITY": {
+    "label": "My City",
+    "type": "str"
+  },
+  "MY_CITY_INTL": {
+    "label": "My City Intl",
+    "type": "str"
+  },
+  "MY_CNTY": {
+    "label": "My Cnty",
+    "type": "str"
+  },
+  "MY_CNTY_ALT": {
+    "label": "My Cnty Alt",
+    "type": "str"
+  },
+  "MY_COUNTRY": {
+    "label": "My Country",
+    "type": "str"
+  },
+  "MY_COUNTRY_INTL": {
+    "label": "My Country Intl",
+    "type": "str"
+  },
+  "MY_CQ_ZONE": {
+    "label": "My Cq Zone",
+    "type": "int"
+  },
+  "MY_DARC_DOK": {
+    "label": "My Darc Dok",
+    "type": "str"
+  },
+  "MY_DXCC": {
+    "label": "My Dxcc",
+    "type": "str"
+  },
+  "MY_FISTS": {
+    "label": "My Fists",
+    "type": "int"
+  },
+  "MY_GRIDSQUARE": {
+    "label": "My Gridsquare",
+    "type": "str"
+  },
+  "MY_GRIDSQUARE_EXT": {
+    "label": "My Gridsquare Ext",
+    "type": "str"
+  },
+  "MY_IOTA": {
+    "label": "My Iota",
+    "type": "str"
+  },
+  "MY_IOTA_ISLAND_ID": {
+    "label": "My Iota Island Id",
+    "type": "int"
+  },
+  "MY_ITU_ZONE": {
+    "label": "My Itu Zone",
+    "type": "int"
+  },
+  "MY_LAT": {
+    "label": "My Lat",
+    "type": "str"
+  },
+  "MY_LON": {
+    "label": "My Lon",
+    "type": "str"
+  },
+  "MY_MORSE_KEY_INFO": {
+    "label": "My Morse Key Info",
+    "type": "str"
+  },
+  "MY_MORSE_KEY_TYPE": {
+    "label": "My Morse Key Type",
+    "type": "str"
+  },
+  "MY_NAME": {
+    "label": "My Name",
+    "type": "str"
+  },
+  "MY_NAME_INTL": {
+    "label": "My Name Intl",
+    "type": "str"
+  },
+  "MY_POSTAL_CODE": {
+    "label": "My Postal Code",
+    "type": "str"
+  },
+  "MY_POSTAL_CODE_INTL": {
+    "label": "My Postal Code Intl",
+    "type": "str"
+  },
+  "MY_POTA_REF": {
+    "label": "My Pota Ref",
+    "type": "str"
+  },
+  "MY_RIG": {
+    "label": "My Rig",
+    "type": "str"
+  },
+  "MY_RIG_INTL": {
+    "label": "My Rig Intl",
+    "type": "str"
+  },
+  "MY_SIG": {
+    "label": "My Sig",
+    "type": "str"
+  },
+  "MY_SIG_INFO": {
+    "label": "My Sig Info",
+    "type": "str"
+  },
+  "MY_SIG_INFO_INTL": {
+    "label": "My Sig Info Intl",
+    "type": "str"
+  },
+  "MY_SIG_INTL": {
+    "label": "My Sig Intl",
+    "type": "str"
+  },
+  "MY_SOTA_REF": {
+    "label": "My Sota Ref",
+    "type": "str"
+  },
+  "MY_STATE": {
+    "label": "My State",
+    "type": "str"
+  },
+  "MY_STREET": {
+    "label": "My Street",
+    "type": "str"
+  },
+  "MY_STREET_INTL": {
+    "label": "My Street Intl",
+    "type": "str"
+  },
+  "MY_USACA_COUNTIES": {
+    "label": "My Usaca Counties",
+    "type": "str"
+  },
+  "MY_VUCC_GRIDS": {
+    "label": "My Vucc Grids",
+    "type": "str"
+  },
+  "MY_WWFF_REF": {
+    "label": "My Wwff Ref",
+    "type": "str"
+  },
+  "NAME": {
+    "label": "Name",
+    "type": "str"
+  },
+  "NAME_INTL": {
+    "label": "Name Intl",
+    "type": "str"
+  },
+  "NOTES": {
+    "label": "Notes",
+    "type": "str"
+  },
+  "NOTES_INTL": {
+    "label": "Notes Intl",
+    "type": "str"
+  },
+  "NR_BURSTS": {
+    "label": "Nr Bursts",
+    "type": "int"
+  },
+  "NR_PINGS": {
+    "label": "Nr Pings",
+    "type": "int"
+  },
+  "OPERATOR": {
+    "label": "Operator",
+    "type": "str"
+  },
+  "OWNER_CALLSIGN": {
+    "label": "Owner Callsign",
+    "type": "str"
+  },
+  "PFX": {
+    "label": "Pfx",
+    "type": "str"
+  },
+  "POTA_REF": {
+    "label": "Pota Ref",
+    "type": "str"
+  },
+  "PRECEDENCE": {
+    "label": "Precedence",
+    "type": "str"
+  },
+  "PROGRAMID": {
+    "label": "Programid",
+    "type": "str"
+  },
+  "PROGRAMVERSION": {
+    "label": "Programversion",
+    "type": "str"
+  },
+  "PROP_MODE": {
+    "label": "Prop Mode",
+    "type": "str"
+  },
+  "PUBLIC_KEY": {
+    "label": "Public Key",
+    "type": "str"
+  },
+  "QRZCOM_QSO_DOWNLOAD_DATE": {
+    "label": "Qrzcom Qso Download Date",
+    "type": "date"
+  },
+  "QRZCOM_QSO_DOWNLOAD_STATUS": {
+    "label": "Qrzcom Qso Download Status",
+    "type": "str"
+  },
+  "QRZCOM_QSO_UPLOAD_DATE": {
+    "label": "Qrzcom Qso Upload Date",
+    "type": "date"
+  },
+  "QRZCOM_QSO_UPLOAD_STATUS": {
+    "label": "Qrzcom Qso Upload Status",
+    "type": "str"
+  },
+  "QSLMSG": {
+    "label": "Qslmsg",
+    "type": "str"
+  },
+  "QSLMSG_INTL": {
+    "label": "Qslmsg Intl",
+    "type": "str"
+  },
+  "QSLMSG_RCVD": {
+    "label": "Qslmsg Rcvd",
+    "type": "str"
+  },
+  "QSLRDATE": {
+    "label": "Qslrdate",
+    "type": "date"
+  },
+  "QSLSDATE": {
+    "label": "Qslsdate",
+    "type": "date"
+  },
+  "QSL_RCVD": {
+    "label": "Qsl Rcvd",
+    "type": "str"
+  },
+  "QSL_RCVD_VIA": {
+    "label": "Qsl Rcvd Via",
+    "type": "str"
+  },
+  "QSL_SENT": {
+    "label": "Qsl Sent",
+    "type": "str"
+  },
+  "QSL_SENT_VIA": {
+    "label": "Qsl Sent Via",
+    "type": "str"
+  },
+  "QSL_VIA": {
+    "label": "Qsl Via",
+    "type": "str"
+  },
+  "QSO_COMPLETE": {
+    "label": "Qso Complete",
+    "type": "str"
+  },
+  "QSO_DATE": {
+    "label": "Qso Date",
+    "type": "date"
+  },
+  "QSO_DATE_OFF": {
+    "label": "Qso Date Off",
+    "type": "date"
+  },
+  "QSO_RANDOM": {
+    "enum": [
+      "Y",
+      "N"
+    ],
+    "label": "Qso Random",
+    "type": "enum"
+  },
+  "QTH": {
+    "label": "Qth",
+    "type": "str"
+  },
+  "QTH_INTL": {
+    "label": "Qth Intl",
+    "type": "str"
+  },
+  "REGION": {
+    "label": "Region",
+    "type": "str"
+  },
+  "RIG": {
+    "label": "Rig",
+    "type": "str"
+  },
+  "RIG_INTL": {
+    "label": "Rig Intl",
+    "type": "str"
+  },
+  "RST_RCVD": {
+    "label": "Rst Rcvd",
+    "type": "str"
+  },
+  "RST_SENT": {
+    "label": "Rst Sent",
+    "type": "str"
+  },
+  "RX_PWR": {
+    "label": "Rx Pwr",
+    "type": "float"
+  },
+  "SAT_MODE": {
+    "label": "Sat Mode",
+    "type": "str"
+  },
+  "SAT_NAME": {
+    "label": "Sat Name",
+    "type": "str"
+  },
+  "SFI": {
+    "label": "Sfi",
+    "type": "str"
+  },
+  "SIG": {
+    "label": "Sig",
+    "type": "str"
+  },
+  "SIG_INFO": {
+    "label": "Sig Info",
+    "type": "str"
+  },
+  "SIG_INFO_INTL": {
+    "label": "Sig Info Intl",
+    "type": "str"
+  },
+  "SIG_INTL": {
+    "label": "Sig Intl",
+    "type": "str"
+  },
+  "SILENT_KEY": {
+    "enum": [
+      "Y",
+      "N"
+    ],
+    "label": "Silent Key",
+    "type": "enum"
+  },
+  "SKCC": {
+    "label": "Skcc",
+    "type": "str"
+  },
+  "SOTA_REF": {
+    "label": "Sota Ref",
+    "type": "str"
+  },
+  "SRX": {
+    "label": "Srx",
+    "type": "int"
+  },
+  "SRX_STRING": {
+    "label": "Srx String",
+    "type": "str"
+  },
+  "STATE": {
+    "label": "State",
+    "type": "str"
+  },
+  "STATION_CALLSIGN": {
+    "label": "Station Callsign",
+    "type": "str"
+  },
+  "STX": {
+    "label": "Stx",
+    "type": "int"
+  },
+  "STX_STRING": {
+    "label": "Stx String",
+    "type": "str"
+  },
+  "SUBMODE": {
+    "label": "Submode",
+    "type": "str"
+  },
+  "SWL": {
+    "enum": [
+      "Y",
+      "N"
+    ],
+    "label": "Swl",
+    "type": "enum"
+  },
+  "TEN_TEN": {
+    "label": "Ten Ten",
+    "type": "int"
+  },
+  "TIME_OFF": {
+    "label": "Time Off",
+    "type": "time"
+  },
+  "TIME_ON": {
+    "label": "Time On",
+    "type": "time"
+  },
+  "TX_PWR": {
+    "label": "Tx Pwr",
+    "type": "float"
+  },
+  "UKSMG": {
+    "label": "Uksmg",
+    "type": "int"
+  },
+  "USACA_COUNTIES": {
+    "label": "Usaca Counties",
+    "type": "str"
+  },
+  "USERDEF": {
+    "label": "Userdef",
+    "type": "str"
+  },
+  "VUCC_GRIDS": {
+    "label": "Vucc Grids",
+    "type": "str"
+  },
+  "WEB": {
+    "label": "Web",
+    "type": "str"
+  },
+  "WWFF_REF": {
+    "label": "Wwff Ref",
+    "type": "str"
+  }
+}

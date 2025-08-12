@@ -94,6 +94,13 @@ class LogEntry(models.Model):
 
     class Meta:
         ordering = ["-qso_date", "-time_on", "callsign"]
+        indexes = [
+            models.Index(fields=["qso_date", "time_on"], name="qso_datetime_idx"),
+            models.Index(fields=["band"], name="qso_band_idx"),
+            models.Index(fields=["mode"], name="qso_mode_idx"),
+            models.Index(fields=["gridsquare"], name="qso_grid_idx"),
+            models.Index(fields=["dxcc"], name="qso_dxcc_idx"),
+        ]
 
     def __str__(self) -> str:  # pragma: no cover - trivial
         return f"{self.callsign} @ {self.qso_date} {self.time_on} ({self.band} {self.mode})"

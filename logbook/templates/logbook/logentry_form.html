@@ -13,7 +13,9 @@
   <style>
     .grid-2 { display:grid; grid-template-columns: 1fr; gap: 12px 24px; }
     @media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
-    .form-section { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; background: #fff; }
+    /* Fluid grid with comfortable min width so fields aren't cramped */
+    .grid-fluid { display:grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 12px 24px; }
+    .form-section { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; background: #fff; width: 100%; display: block; }
     .form-section h3 { margin: 0 0 8px 0; font-size: 1rem; color: #111827; }
     .field { margin: 0; }
     .hint { color:#6b7280; font-size: .85em; }
@@ -25,13 +27,11 @@
     .btn-ghost { border-color:#d1d5db; color:#374151; background:#fff; }
   </style>
 
-  <form method="post" class="stack" novalidate>
+  <form method="post" novalidate>
     {% csrf_token %}
 
-    {# Basics #}
-    <div class="form-section">
-      <h3>Basics</h3>
-      <div class="grid-2">
+    {# Baseline fields (always shown) #}
+    <div class="grid-fluid">
       <div class="field" id="field-callsign">
         <label>{{ form.callsign.label_tag }}</label>
         {{ form.callsign }}
@@ -62,133 +62,45 @@
         {% if form.mode.help_text %}<small>{{ form.mode.help_text }}</small>{% endif %}
         {% for error in form.mode.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
       </div>
+    </div>
+
+    
+
+    <div class="form-section">
+      <div style="display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:8px;">
+        <h3 style="margin:0;">Additional Fields</h3>
+        <label style="display:flex; align-items:center; gap:8px;">
+          <span>Operation Profile</span>
+          <select id="profile-select">
+            <option value="default">Default</option>
+            <option value="pota">POTA</option>
+            <option value="sota">SOTA</option>
+            <option value="satellite">Satellite</option>
+            <option value="vhfuhf">VHF/UHF Local</option>
+          </select>
+        </label>
       </div>
-    </div>
-
-    {# Frequency, Mode details #}
-    <div class="form-section">
-      <h3>Frequency & Mode</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.freq.label_tag }}</label> {{ form.freq }} </div>
-        <div class="field"> <label>{{ form.submode.label_tag }}</label> {{ form.submode }} </div>
-        <div class="field"> <label>{{ form.band_rx.label_tag }}</label> {{ form.band_rx }} </div>
-        <div class="field"> <label>{{ form.freq_rx.label_tag }}</label> {{ form.freq_rx }} </div>
-        <div class="field"> <label>{{ form.prop_mode.label_tag }}</label> {{ form.prop_mode }} </div>
-        <div class="field"> <label>{{ form.sat_name.label_tag }}</label> {{ form.sat_name }} </div>
-      </div>
-    </div>
-
-    {# Timing end #}
-    <div class="form-section">
-      <h3>QSO End (optional)</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.qso_date_off.label_tag }}</label> {{ form.qso_date_off }} </div>
-        <div class="field"> <label>{{ form.time_off.label_tag }}</label> {{ form.time_off }} </div>
-      </div>
-    </div>
-
-    {# Station & Person #}
-    <div class="form-section">
-      <h3>Station & Operator</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.station_callsign.label_tag }}</label> {{ form.station_callsign }} </div>
-        <div class="field"> <label>{{ form.operator.label_tag }}</label> {{ form.operator }} </div>
-        <div class="field"> <label>{{ form.name.label_tag }}</label> {{ form.name }} </div>
-        <div class="field"> <label>{{ form.country.label_tag }}</label> {{ form.country }} </div>
-      </div>
-    </div>
-
-    {# Reports & Exchange #}
-    <div class="form-section">
-      <h3>Reports & Exchange</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.rst_sent.label_tag }}</label> {{ form.rst_sent }} </div>
-        <div class="field"> <label>{{ form.rst_rcvd.label_tag }}</label> {{ form.rst_rcvd }} </div>
-        <div class="field"> <label>{{ form.srx.label_tag }}</label> {{ form.srx }} </div>
-        <div class="field"> <label>{{ form.srx_string.label_tag }}</label> {{ form.srx_string }} </div>
-        <div class="field"> <label>{{ form.stx.label_tag }}</label> {{ form.stx }} </div>
-        <div class="field"> <label>{{ form.stx_string.label_tag }}</label> {{ form.stx_string }} </div>
-        <div class="field"> <label>{{ form.tx_pwr.label_tag }}</label> {{ form.tx_pwr }} </div>
-      </div>
-    </div>
-
-    {# Locations #}
-    <div class="form-section">
-      <h3>Locations</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.gridsquare.label_tag }}</label> {{ form.gridsquare }} </div>
-        <div class="field"> <label>{{ form.iota.label_tag }}</label> {{ form.iota }} </div>
-        <div class="field"> <label>{{ form.dxcc.label_tag }}</label> {{ form.dxcc }} </div>
-        <div class="field"> <label>{{ form.cq_zone.label_tag }}</label> {{ form.cq_zone }} </div>
-        <div class="field"> <label>{{ form.itu_zone.label_tag }}</label> {{ form.itu_zone }} </div>
-      </div>
-    </div>
-
-    {# My Station #}
-    <div class="form-section">
-      <h3>My Station</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.my_gridsquare.label_tag }}</label> {{ form.my_gridsquare }} </div>
-        <div class="field"> <label>{{ form.my_vucc_grids.label_tag }}</label> {{ form.my_vucc_grids }} </div>
-        <div class="field"> <label>{{ form.my_dxcc.label_tag }}</label> {{ form.my_dxcc }} </div>
-        <div class="field"> <label>{{ form.my_cq_zone.label_tag }}</label> {{ form.my_cq_zone }} </div>
-        <div class="field"> <label>{{ form.my_itu_zone.label_tag }}</label> {{ form.my_itu_zone }} </div>
-        <div class="field"> <label>{{ form.my_state.label_tag }}</label> {{ form.my_state }} </div>
-        <div class="field"> <label>{{ form.my_cnty.label_tag }}</label> {{ form.my_cnty }} </div>
-        <div class="field"> <label>{{ form.my_name.label_tag }}</label> {{ form.my_name }} </div>
-      </div>
-    </div>
-
-    {# Programs & Awards #}
-    <div class="form-section">
-      <h3>Programs & Awards</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.sig.label_tag }}</label> {{ form.sig }} </div>
-        <div class="field"> <label>{{ form.sig_info.label_tag }}</label> {{ form.sig_info }} </div>
-        <div class="field"> <label>{{ form.my_sig.label_tag }}</label> {{ form.my_sig }} </div>
-        <div class="field"> <label>{{ form.my_sig_info.label_tag }}</label> {{ form.my_sig_info }} </div>
-        <div class="field"> <label>{{ form.sota_ref.label_tag }}</label> {{ form.sota_ref }} </div>
-        <div class="field"> <label>{{ form.my_sota_ref.label_tag }}</label> {{ form.my_sota_ref }} </div>
-      </div>
-    </div>
-
-    {# QSL #}
-    <div class="form-section">
-      <h3>LoTW</h3>
-      <div class="grid-2">
-        <div class="field"> <label>{{ form.lotw_qsl_sent.label_tag }}</label> {{ form.lotw_qsl_sent }} </div>
-        <div class="field"> <label>{{ form.lotw_qsl_sent_date.label_tag }}</label> {{ form.lotw_qsl_sent_date }} </div>
-        <div class="field"> <label>{{ form.lotw_qsl_rcvd.label_tag }}</label> {{ form.lotw_qsl_rcvd }} </div>
-        <div class="field"> <label>{{ form.lotw_qsl_rcvd_date.label_tag }}</label> {{ form.lotw_qsl_rcvd_date }} </div>
-      </div>
-    </div>
-
-    {# Notes #}
-    <div class="form-section">
-      <h3>Notes</h3>
-      <div class="field"> {{ form.notes }} </div>
-    </div>
-
-    <div class="form-section">
-      <h3>Show/Hide Optional Fields</h3>
       <div class="optional-picker">
-        <div class="grid-2" style="grid-template-columns: 1fr auto; align-items: end;">
+        <div class="grid-2" style="grid-template-columns: minmax(300px, 1fr) auto; align-items: end;">
           <div>
-            <input id="add-opt-input" list="opt-fields-list" placeholder="Search field (e.g., Grid, RST Sent)"/>
+            <input id="add-opt-input" list="opt-fields-list" placeholder="Search to add a field"/>
             <datalist id="opt-fields-list">
               {% for f in optional_fields %}
                 <option value="{{ f.label }}"></option>
               {% endfor %}
+              {% for tag in adif_suggestions %}
+                <option value="{{ tag }}"></option>
+              {% endfor %}
             </datalist>
           </div>
           <div class="inline-actions">
-            <button type="button" class="btn btn-ghost" id="add-opt-btn">Add Field</button>
+            <button type="button" class="btn btn-ghost" id="add-opt-btn">Add</button>
           </div>
         </div>
-        <div class="hint">Fields with values appear automatically.</div>
+        <div class="hint">Pick a model field to reveal it, or type an ADIF tag to create a new field. Duplicates are ignored. Empty fields are not saved.</div>
       </div>
       <div class="optional-fields">
-        <div class="grid-2">
+        <div id="optional-grid" class="grid-fluid">
           {% for f in optional_fields %}
             {% with field=form|attr:f.name %}
               {% if field %}
@@ -204,70 +116,22 @@
               {% endif %}
             {% endwith %}
           {% endfor %}
-        </div>
-      </div>
-    </div>
-
-    <div class="optional-fields">
-      <div class="grid">
-        {% for f in optional_fields %}
-          {% with field=form|attr:f.name %}
-            {% if field %}
-            <div class="field optional-field{% if f.checked %} visible{% endif %}" id="field-{{f.name}}-opt" data-name="{{f.name}}">
-              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                <label style="margin:0;">{{ field.label_tag }}</label>
-                <button type="button" class="btn" data-remove-opt="{{f.name}}" title="Remove field">Remove</button>
+          {# Render existing extras as normal fields #}
+          {% for item in extras_items %}
+            <div class="field optional-field visible" id="extra-{{ item.key|lower }}-opt" data-extra="{{ item.key|upper }}">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
+                <label style="margin:0;">{{ item.key|upper }}</label>
+                <button type="button" class="btn btn-ghost" data-remove-extra>Remove</button>
               </div>
-              {{ field }}
-              {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
-              {% for error in field.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
+              <input type="hidden" name="extra_key" value="{{ item.key|upper }}" />
+              <input name="extra_val" value="{{ item.val }}" />
             </div>
-            {% endif %}
-          {% endwith %}
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
 
-    <div class="form-section">
-      <h3>Additional ADIF Fields</h3>
-      <div class="optional-picker">
-        <div class="grid-2" style="grid-template-columns: 1fr 1fr auto; align-items: end; gap: 12px;">
-          <div>
-            <input id="extra-key-input" list="extras-suggest" placeholder="ADIF field (e.g., IOTA)" />
-          </div>
-          <div>
-            <input id="extra-val-input" placeholder="Value" />
-          </div>
-          <div class="inline-actions">
-            <button type="button" class="btn btn-ghost" id="add-extra-btn">Add</button>
-          </div>
-        </div>
-        <datalist id="extras-suggest">
-          <option value="GRIDSQUARE"></option>
-          <option value="DXCC"></option>
-          <option value="CQZ"></option>
-          <option value="ITUZ"></option>
-          <option value="SIG"></option>
-          <option value="SIG_INFO"></option>
-          <option value="MY_SIG"></option>
-          <option value="MY_SIG_INFO"></option>
-          <option value="SOTA_REF"></option>
-          <option value="MY_SOTA_REF"></option>
-          <option value="IOTA"></option>
-          <option value="SUBMODE"></option>
-        </datalist>
-        <div class="hint">Extras save as ADIF fields; empty values are ignored.</div>
-      </div>
-      <div id="extras-list" class="stack" style="flex-direction:column; align-items:stretch;">
-        {% for item in extras_items %}
-          <div class="grid-2" style="grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: center;" data-extra-row>
-            <input name="extra_key" value="{{ item.key }}" />
-            <input name="extra_val" value="{{ item.val }}" />
-            <button type="button" class="btn btn-ghost" data-remove-extra>Remove</button>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
+    
 
     <div class="actions" style="display:flex; gap:8px; justify-content:flex-end; margin-top: 16px;">
       <a class="btn btn-ghost" href="{% url 'logbook:list' %}">Cancel</a>
@@ -280,6 +144,15 @@
     const OPTIONAL_CATALOG = [
       {% for f in optional_fields %}{ name: "{{ f.name }}", label: "{{ f.label }}" }{% if not forloop.last %},{% endif %}{% endfor %}
     ];
+
+    // Lightweight, UI-only operation profiles
+    const PROFILES = {
+      default: [],
+      pota: ["sig", "sig_info", "my_sig", "my_sig_info"],
+      sota: ["sota_ref", "my_sota_ref", "sig", "sig_info", "my_sig", "my_sig_info"],
+      satellite: ["prop_mode", "sat_name", "band_rx", "freq_rx", "submode"],
+      vhfuhf: ["gridsquare", "my_gridsquare", "my_vucc_grids", "tx_pwr"],
+    };
 
     function showOptionalFieldByName(name) {
       const block = document.getElementById('field-' + name + '-opt');
@@ -303,16 +176,71 @@
       block.classList.remove('visible');
     }
 
+    function hideOptionalField(name) {
+      const block = document.getElementById('field-' + name + '-opt');
+      if (!block) return;
+      block.classList.remove('visible');
+    }
+
+    function fieldHasValue(name) {
+      const block = document.getElementById('field-' + name + '-opt');
+      if (!block) return false;
+      const input = block.querySelector('input, select, textarea');
+      if (!input) return false;
+      if (input.tagName === 'SELECT') return input.value !== '' && input.selectedIndex > 0;
+      return (input.value || '').trim() !== '';
+    }
+
+    function applyProfile(key) {
+      const wanted = new Set(PROFILES[key] || []);
+      OPTIONAL_CATALOG.forEach(it => {
+        const { name } = it;
+        if (wanted.has(name)) {
+          showOptionalFieldByName(name);
+        } else {
+          // Hide only if no current value to avoid surprising the user
+          if (!fieldHasValue(name)) hideOptionalField(name);
+        }
+      });
+      try { localStorage.setItem('loghub.profile', key); } catch (e) {}
+    }
+
     document.getElementById('add-opt-btn').addEventListener('click', () => {
       const inp = document.getElementById('add-opt-input');
-      const q = (inp.value || '').trim().toLowerCase();
-      if (!q) return;
-      // Try to match by label or name
+      const raw = (inp.value || '').trim();
+      if (!raw) return;
+      const q = raw.toLowerCase();
+      // Try to match a known model field by label or name
       const found = OPTIONAL_CATALOG.find(it => it.label.toLowerCase() === q) || OPTIONAL_CATALOG.find(it => it.name.toLowerCase() === q) || OPTIONAL_CATALOG.find(it => it.label.toLowerCase().includes(q));
       if (found) {
-        showOptionalFieldByName(found.name);
+        const block = document.getElementById('field-' + found.name + '-opt');
+        if (block && !block.classList.contains('visible')) {
+          showOptionalFieldByName(found.name);
+        }
         inp.value = '';
+        return;
       }
+      // Treat as ADIF extra key; create a normal-looking field block if not present
+      const key = raw.toUpperCase();
+      if (document.querySelector('[data-extra="' + key + '"]')) {
+        inp.value = '';
+        return;
+      }
+      const grid = document.getElementById('optional-grid');
+      const wrap = document.createElement('div');
+      wrap.className = 'field optional-field visible';
+      wrap.id = 'extra-' + key.toLowerCase() + '-opt';
+      wrap.setAttribute('data-extra', key);
+      wrap.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
+          <label style="margin:0;">${key}</label>
+          <button type="button" class="btn btn-ghost" data-remove-extra>Remove</button>
+        </div>
+        <input type="hidden" name="extra_key" value="${key}" />
+        <input name="extra_val" value="" />
+      `;
+      grid.appendChild(wrap);
+      inp.value = '';
     });
 
     // Remove buttons for optional fields
@@ -323,34 +251,25 @@
         clearAndHideOptionalField(name);
       }
       if (t && t.matches('button[data-remove-extra]')) {
-        const row = t.closest('[data-extra-row]');
+        const row = t.closest('[data-extra]');
         if (row) row.remove();
       }
     });
 
-    // Extras add
-    document.getElementById('add-extra-btn').addEventListener('click', () => {
-      const keyEl = document.getElementById('extra-key-input');
-      const valEl = document.getElementById('extra-val-input');
-      let key = (keyEl.value || '').trim();
-      const val = (valEl.value || '').trim();
-      if (!key) return;
-      key = key.toUpperCase();
-      const container = document.getElementById('extras-list');
-      const row = document.createElement('div');
-      row.className = 'grid';
-      row.style.gridTemplateColumns = '1fr 1fr auto';
-      row.style.gap = '12px';
-      row.style.alignItems = 'center';
-      row.setAttribute('data-extra-row', '');
-      row.innerHTML = `
-        <input name="extra_key" value="${key}" />
-        <input name="extra_val" value="${val}" />
-        <button type="button" class="btn" data-remove-extra>Remove</button>
-      `;
-      container.appendChild(row);
-      keyEl.value = '';
-      valEl.value = '';
-    });
+    // Removed separate extras add handler; unified in add-opt-btn
+
+    // Profile init and change handler
+    (function initProfile() {
+      const sel = document.getElementById('profile-select');
+      if (!sel) return;
+      try {
+        const saved = localStorage.getItem('loghub.profile');
+        if (saved && PROFILES[saved]) {
+          sel.value = saved;
+          applyProfile(saved);
+        }
+      } catch (e) {}
+      sel.addEventListener('change', () => applyProfile(sel.value));
+    })();
   </script>
 {% endblock %}

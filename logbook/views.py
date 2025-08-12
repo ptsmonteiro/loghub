@@ -9,6 +9,8 @@ from .models import LogEntry, LogEntryExtras
 from .adif import queryset_to_adif
 from .forms_import import ADIFUploadForm
 from .imports import gzip_bytes, parse_adif_to_staged, finalize_import, compute_sha256
+from .adif_fields import CORE_TAGS
+from .adif_catalog import tag_suggestions
 from .models import LogImport, StagedEntry
 
 
@@ -38,7 +40,11 @@ class LogEntryCreateView(CreateView):
                 continue
             if v is None or str(v).strip() == "":
                 continue
-            extras[str(k).upper()] = str(v)
+            tag = str(k).upper()
+            # Prevent duplicates: ignore any extra that maps to a core column
+            if tag in CORE_TAGS:
+                continue
+            extras[tag] = str(v)
         if extras:
             LogEntryExtras.objects.update_or_create(entry=self.object, defaults={"data": extras})
         return response
@@ -74,6 +80,8 @@ class LogEntryCreateView(CreateView):
         ctx["optional_fields"] = enriched
         # For create view, no existing extras
         ctx["extras_items"] = []
+        # Suggestions for ADIF extras picker
+        ctx["adif_suggestions"] = tag_suggestions(300)
         return ctx
 
 
@@ -93,7 +101,10 @@ class LogEntryUpdateView(UpdateView):
                 continue
             if v is None or str(v).strip() == "":
                 continue
-            extras[str(k).upper()] = str(v)
+            tag = str(k).upper()
+            if tag in CORE_TAGS:
+                continue
+            extras[tag] = str(v)
         if extras:
             LogEntryExtras.objects.update_or_create(entry=self.object, defaults={"data": extras})
         else:
@@ -136,6 +147,7 @@ class LogEntryUpdateView(UpdateView):
             for k, v in inst.extras.data.items():
                 extras_items.append({"key": str(k), "val": str(v)})
         ctx["extras_items"] = extras_items
+        ctx["adif_suggestions"] = tag_suggestions(300)
         return ctx
 
 
