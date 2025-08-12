@@ -9,7 +9,7 @@
 <table>
   <thead>
     <tr>
-      <th>Station/Operator</th>
+      <th>Station Callsign</th>
       <th>Callsign</th>
       <th>Name</th>
       <th>Date</th>
@@ -22,7 +22,7 @@
   <tbody>
   {% for entry in object_list %}
     <tr>
-      <td>{{ entry.operator|default:entry.station_callsign }}</td>
+      <td>{{ entry.station_callsign|default:entry.operator }}</td>
       <td><a href="{% url 'logbook:detail' entry.pk %}">{{ entry.callsign }}</a></td>
       <td>{{ entry.name }}</td>
       <td>{{ entry.qso_date }}</td>

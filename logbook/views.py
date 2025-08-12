@@ -175,7 +175,7 @@ class ImportReviewView(ListView):
             "freq_rx": "Freq RX",
             "mode": "Mode",
             "submode": "Submode",
-            "operator_display": "Operator",
+            "operator_display": "Station Callsign",
         }
 
         def label_for(field: str) -> str:
