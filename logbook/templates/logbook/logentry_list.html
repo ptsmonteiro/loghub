@@ -9,7 +9,9 @@
 <table>
   <thead>
     <tr>
+      <th>Station/Operator</th>
       <th>Callsign</th>
+      <th>Name</th>
       <th>Date</th>
       <th>Time</th>
       <th>Band</th>
@@ -20,7 +22,9 @@
   <tbody>
   {% for entry in object_list %}
     <tr>
+      <td>{{ entry.operator|default:entry.station_callsign }}</td>
       <td><a href="{% url 'logbook:detail' entry.pk %}">{{ entry.callsign }}</a></td>
+      <td>{{ entry.name }}</td>
       <td>{{ entry.qso_date }}</td>
       <td>{{ entry.time_on }}</td>
       <td>{{ entry.band }}</td>
@@ -54,4 +58,3 @@
 {% endif %}
 
 {% endblock %}
-
