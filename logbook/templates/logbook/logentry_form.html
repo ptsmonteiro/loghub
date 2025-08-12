@@ -65,6 +65,18 @@
         {% if form.mode.help_text %}<small>{{ form.mode.help_text }}</small>{% endif %}
         {% for error in form.mode.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
       </div>
+      <div class="field" id="field-rst_sent">
+        <label>{{ form.rst_sent.label_tag }}</label>
+        {{ form.rst_sent }}
+        {% if form.rst_sent.help_text %}<small>{{ form.rst_sent.help_text }}</small>{% endif %}
+        {% for error in form.rst_sent.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="field" id="field-rst_rcvd">
+        <label>{{ form.rst_rcvd.label_tag }}</label>
+        {{ form.rst_rcvd }}
+        {% if form.rst_rcvd.help_text %}<small>{{ form.rst_rcvd.help_text }}</small>{% endif %}
+        {% for error in form.rst_rcvd.errors %}<div style="color:#a00">{{ error }}</div>{% endfor %}
+      </div>
       {% comment %} Render additional model fields inline; hidden unless value {% endcomment %}
       {% for f in optional_fields %}
         {% with field=form|attr:f.name %}

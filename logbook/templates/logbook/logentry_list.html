@@ -16,6 +16,8 @@
       <th>Time</th>
       <th>Band</th>
       <th>Mode</th>
+      <th>RST Sent</th>
+      <th>RST Rcvd</th>
       <th></th>
     </tr>
   </thead>
@@ -29,6 +31,8 @@
       <td>{{ entry.time_on }}</td>
       <td>{{ entry.band }}</td>
       <td>{{ entry.mode }}</td>
+      <td>{{ entry.rst_sent }}</td>
+      <td>{{ entry.rst_rcvd }}</td>
       <td class="stack">
         <a class="btn" href="{% url 'logbook:update' entry.pk %}">Edit</a>
         <a class="btn btn-danger" href="{% url 'logbook:delete' entry.pk %}">Delete</a>

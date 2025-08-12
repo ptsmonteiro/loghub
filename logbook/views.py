@@ -62,7 +62,7 @@ class LogEntryCreateView(CreateView):
             ("my_dxcc", "My DXCC"), ("my_state", "My State"), ("my_cnty", "My County"), ("my_gridsquare", "My Grid"),
             ("my_vucc_grids", "My VUCC Grids"), ("my_cq_zone", "My CQZ"), ("my_itu_zone", "My ITUZ"), ("my_name", "My Name"),
             ("sig", "SIG"), ("sig_info", "SIG Info"), ("my_sig", "My SIG"), ("my_sig_info", "My SIG Info"), ("sota_ref", "SOTA Ref"), ("my_sota_ref", "My SOTA Ref"),
-            ("rst_sent", "RST Sent"), ("rst_rcvd", "RST Rcvd"), ("tx_pwr", "TX Power"),
+            ("tx_pwr", "TX Power"),
             ("lotw_qsl_rcvd", "LoTW QSL Rcvd"), ("lotw_qsl_rcvd_date", "LoTW QSL Rcvd Date"), ("lotw_qsl_sent", "LoTW QSL Sent"), ("lotw_qsl_sent_date", "LoTW QSL Sent Date"),
             ("notes", "Notes"),
         ]
@@ -131,7 +131,7 @@ class LogEntryUpdateView(UpdateView):
             ("my_dxcc", "My DXCC"), ("my_state", "My State"), ("my_cnty", "My County"), ("my_gridsquare", "My Grid"),
             ("my_vucc_grids", "My VUCC Grids"), ("my_cq_zone", "My CQZ"), ("my_itu_zone", "My ITUZ"), ("my_name", "My Name"),
             ("sig", "SIG"), ("sig_info", "SIG Info"), ("my_sig", "My SIG"), ("my_sig_info", "My SIG Info"), ("sota_ref", "SOTA Ref"), ("my_sota_ref", "My SOTA Ref"),
-            ("rst_sent", "RST Sent"), ("rst_rcvd", "RST Rcvd"), ("tx_pwr", "TX Power"),
+            ("tx_pwr", "TX Power"),
             ("lotw_qsl_rcvd", "LoTW QSL Rcvd"), ("lotw_qsl_rcvd_date", "LoTW QSL Rcvd Date"), ("lotw_qsl_sent", "LoTW QSL Sent"), ("lotw_qsl_sent_date", "LoTW QSL Sent Date"),
             ("notes", "Notes"),
         ]
