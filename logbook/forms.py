@@ -4,8 +4,6 @@ from .models import LogEntry
 
 
 class LogEntryForm(forms.ModelForm):
-    extras = forms.JSONField(required=False, help_text="Optional: additional ADIF fields as a JSON object")
-
     class Meta:
         model = LogEntry
         fields = [
@@ -67,10 +65,3 @@ class LogEntryForm(forms.ModelForm):
             "lotw_qsl_sent_date": forms.DateInput(attrs={"type": "date"}),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        inst = kwargs.get("instance") or getattr(self, "instance", None)
-        if inst and getattr(inst, "extras", None):
-            self.fields["extras"].initial = inst.extras.data
-

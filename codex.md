@@ -28,7 +28,7 @@ GitHub Actions (CI/CD)
 Guidelines:
 
 Follow the coding standards enforced by pre‑commit hooks.
-Add tests for any new feature or fix.
+Add tests for any new feature or fix. Tests should be run through docker.
 Keep commits small and focused.
 Use good first issue labels for beginner‑friendly tasks.
 

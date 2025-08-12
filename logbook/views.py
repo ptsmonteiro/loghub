@@ -29,10 +29,52 @@ class LogEntryCreateView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        extras = form.cleaned_data.get("extras")
+        # Collect extras from dynamic inputs: extra_key/extra_val arrays
+        keys = [k.strip() for k in self.request.POST.getlist("extra_key")]
+        vals = [v for v in self.request.POST.getlist("extra_val")]
+        extras: dict[str, str] = {}
+        for k, v in zip(keys, vals):
+            if not k:
+                continue
+            if v is None or str(v).strip() == "":
+                continue
+            extras[str(k).upper()] = str(v)
         if extras:
             LogEntryExtras.objects.update_or_create(entry=self.object, defaults={"data": extras})
         return response
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        form = ctx.get("form")
+        optional_fields = [
+            ("freq", "Freq"), ("band_rx", "Band RX"), ("freq_rx", "Freq RX"), ("submode", "Submode"),
+            ("station_callsign", "Station Callsign"), ("operator", "Operator"), ("name", "Name"),
+            ("prop_mode", "Prop Mode"), ("sat_name", "Satellite"),
+            ("srx", "SRX"), ("srx_string", "SRX String"), ("stx", "STX"), ("stx_string", "STX String"),
+            ("qso_date_off", "Date Off"), ("time_off", "Time Off"),
+            ("country", "Country"), ("gridsquare", "Grid"), ("dxcc", "DXCC"), ("cq_zone", "CQZ"), ("itu_zone", "ITUZ"), ("iota", "IOTA"),
+            ("my_dxcc", "My DXCC"), ("my_state", "My State"), ("my_cnty", "My County"), ("my_gridsquare", "My Grid"),
+            ("my_vucc_grids", "My VUCC Grids"), ("my_cq_zone", "My CQZ"), ("my_itu_zone", "My ITUZ"), ("my_name", "My Name"),
+            ("sig", "SIG"), ("sig_info", "SIG Info"), ("my_sig", "My SIG"), ("my_sig_info", "My SIG Info"), ("sota_ref", "SOTA Ref"), ("my_sota_ref", "My SOTA Ref"),
+            ("rst_sent", "RST Sent"), ("rst_rcvd", "RST Rcvd"), ("tx_pwr", "TX Power"),
+            ("lotw_qsl_rcvd", "LoTW QSL Rcvd"), ("lotw_qsl_rcvd_date", "LoTW QSL Rcvd Date"), ("lotw_qsl_sent", "LoTW QSL Sent"), ("lotw_qsl_sent_date", "LoTW QSL Sent Date"),
+            ("notes", "Notes"),
+        ]
+        enriched = []
+        for name, label in optional_fields:
+            bf = form[name] if form and name in form.fields else None
+            checked = False
+            if bf is not None:
+                try:
+                    val = bf.value()
+                except Exception:
+                    val = None
+                checked = bool(val)
+            enriched.append({"name": name, "label": label, "checked": checked})
+        ctx["optional_fields"] = enriched
+        # For create view, no existing extras
+        ctx["extras_items"] = []
+        return ctx
 
 
 class LogEntryUpdateView(UpdateView):
@@ -42,12 +84,59 @@ class LogEntryUpdateView(UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        extras = form.cleaned_data.get("extras")
+        # Collect extras from dynamic inputs
+        keys = [k.strip() for k in self.request.POST.getlist("extra_key")]
+        vals = [v for v in self.request.POST.getlist("extra_val")]
+        extras: dict[str, str] = {}
+        for k, v in zip(keys, vals):
+            if not k:
+                continue
+            if v is None or str(v).strip() == "":
+                continue
+            extras[str(k).upper()] = str(v)
         if extras:
             LogEntryExtras.objects.update_or_create(entry=self.object, defaults={"data": extras})
         else:
             LogEntryExtras.objects.filter(entry=self.object).delete()
         return response
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        form = ctx.get("form")
+        optional_fields = [
+            ("freq", "Freq"), ("band_rx", "Band RX"), ("freq_rx", "Freq RX"), ("submode", "Submode"),
+            ("station_callsign", "Station Callsign"), ("operator", "Operator"), ("name", "Name"),
+            ("prop_mode", "Prop Mode"), ("sat_name", "Satellite"),
+            ("srx", "SRX"), ("srx_string", "SRX String"), ("stx", "STX"), ("stx_string", "STX String"),
+            ("qso_date_off", "Date Off"), ("time_off", "Time Off"),
+            ("country", "Country"), ("gridsquare", "Grid"), ("dxcc", "DXCC"), ("cq_zone", "CQZ"), ("itu_zone", "ITUZ"), ("iota", "IOTA"),
+            ("my_dxcc", "My DXCC"), ("my_state", "My State"), ("my_cnty", "My County"), ("my_gridsquare", "My Grid"),
+            ("my_vucc_grids", "My VUCC Grids"), ("my_cq_zone", "My CQZ"), ("my_itu_zone", "My ITUZ"), ("my_name", "My Name"),
+            ("sig", "SIG"), ("sig_info", "SIG Info"), ("my_sig", "My SIG"), ("my_sig_info", "My SIG Info"), ("sota_ref", "SOTA Ref"), ("my_sota_ref", "My SOTA Ref"),
+            ("rst_sent", "RST Sent"), ("rst_rcvd", "RST Rcvd"), ("tx_pwr", "TX Power"),
+            ("lotw_qsl_rcvd", "LoTW QSL Rcvd"), ("lotw_qsl_rcvd_date", "LoTW QSL Rcvd Date"), ("lotw_qsl_sent", "LoTW QSL Sent"), ("lotw_qsl_sent_date", "LoTW QSL Sent Date"),
+            ("notes", "Notes"),
+        ]
+        enriched = []
+        for name, label in optional_fields:
+            bf = form[name] if form and name in form.fields else None
+            checked = False
+            if bf is not None:
+                try:
+                    val = bf.value()
+                except Exception:
+                    val = None
+                checked = bool(val)
+            enriched.append({"name": name, "label": label, "checked": checked})
+        ctx["optional_fields"] = enriched
+        # Existing extras become visible as individual fields
+        extras_items: list[dict[str, str]] = []
+        inst = self.object
+        if inst and getattr(inst, "extras", None) and inst.extras.data:
+            for k, v in inst.extras.data.items():
+                extras_items.append({"key": str(k), "val": str(v)})
+        ctx["extras_items"] = extras_items
+        return ctx
 
 
 class LogEntryDeleteView(DeleteView):
