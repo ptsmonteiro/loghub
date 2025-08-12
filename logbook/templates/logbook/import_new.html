@@ -1,0 +1,24 @@
+{% extends "logbook/base.html" %}
+{% block content %}
+  <h2>New ADIF Import</h2>
+  <form method="post" enctype="multipart/form-data" class="stack">
+    {% csrf_token %}
+    <div class="field">
+      <label>ADIF File</label>
+      {{ form.file }}
+    </div>
+    <div class="field">
+      <label>Station Callsign (optional)</label>
+      {{ form.station_callsign }}
+    </div>
+    <div class="field">
+      <label>Notes (optional)</label>
+      {{ form.notes }}
+    </div>
+    <div class="actions stack">
+      <button class="btn" type="submit">Upload and Process</button>
+      <a class="btn" href="{% url 'logbook:list' %}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+

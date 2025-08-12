@@ -1,0 +1,90 @@
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ("logbook", "0001_initial"),
+    ]
+
+    operations = [
+        migrations.AddField(
+            model_name="logimport",
+            name="content_gz",
+            field=models.BinaryField(blank=True, help_text="Gzipped original ADIF content", null=True),
+        ),
+        migrations.AddField(
+            model_name="logimport",
+            name="entry_count",
+            field=models.PositiveIntegerField(default=0),
+        ),
+        migrations.AddField(
+            model_name="logimport",
+            name="error_count",
+            field=models.PositiveIntegerField(default=0),
+        ),
+        migrations.AddField(
+            model_name="logimport",
+            name="status",
+            field=models.CharField(choices=[("pending", "Pending"), ("done", "Done"), ("cancelled", "Cancelled")], default="pending", max_length=16),
+        ),
+        migrations.CreateModel(
+            name="StagedEntry",
+            fields=[
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("callsign", models.CharField(db_index=True, max_length=20)),
+                ("qso_date", models.DateField()),
+                ("time_on", models.TimeField()),
+                ("band", models.CharField(blank=True, max_length=16)),
+                ("freq", models.DecimalField(blank=True, decimal_places=6, max_digits=11, null=True)),
+                ("band_rx", models.CharField(blank=True, max_length=16)),
+                ("freq_rx", models.DecimalField(blank=True, decimal_places=6, max_digits=11, null=True)),
+                ("mode", models.CharField(max_length=32)),
+                ("submode", models.CharField(blank=True, max_length=32)),
+                ("prop_mode", models.CharField(blank=True, max_length=16)),
+                ("sat_name", models.CharField(blank=True, max_length=32)),
+                ("station_callsign", models.CharField(blank=True, max_length=20)),
+                ("operator", models.CharField(blank=True, max_length=20)),
+                ("rst_sent", models.CharField(blank=True, max_length=8)),
+                ("rst_rcvd", models.CharField(blank=True, max_length=8)),
+                ("qso_date_off", models.DateField(blank=True, null=True)),
+                ("time_off", models.TimeField(blank=True, null=True)),
+                ("srx", models.PositiveIntegerField(blank=True, null=True)),
+                ("srx_string", models.CharField(blank=True, max_length=32)),
+                ("stx", models.PositiveIntegerField(blank=True, null=True)),
+                ("stx_string", models.CharField(blank=True, max_length=32)),
+                ("country", models.CharField(blank=True, max_length=64)),
+                ("gridsquare", models.CharField(blank=True, max_length=16)),
+                ("name", models.CharField(blank=True, max_length=64)),
+                ("tx_pwr", models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True)),
+                ("dxcc", models.PositiveIntegerField(blank=True, null=True)),
+                ("cq_zone", models.PositiveIntegerField(blank=True, null=True)),
+                ("itu_zone", models.PositiveIntegerField(blank=True, null=True)),
+                ("iota", models.CharField(blank=True, max_length=10)),
+                ("my_dxcc", models.PositiveIntegerField(blank=True, null=True)),
+                ("my_state", models.CharField(blank=True, max_length=16)),
+                ("my_cnty", models.CharField(blank=True, max_length=32)),
+                ("my_gridsquare", models.CharField(blank=True, max_length=16)),
+                ("my_vucc_grids", models.CharField(blank=True, max_length=64)),
+                ("my_cq_zone", models.PositiveIntegerField(blank=True, null=True)),
+                ("my_itu_zone", models.PositiveIntegerField(blank=True, null=True)),
+                ("my_name", models.CharField(blank=True, max_length=64)),
+                ("lotw_qsl_rcvd", models.CharField(blank=True, max_length=1)),
+                ("lotw_qsl_rcvd_date", models.DateField(blank=True, null=True)),
+                ("lotw_qsl_sent", models.CharField(blank=True, max_length=1)),
+                ("lotw_qsl_sent_date", models.DateField(blank=True, null=True)),
+                ("sig", models.CharField(blank=True, max_length=16)),
+                ("sig_info", models.CharField(blank=True, max_length=32)),
+                ("my_sig", models.CharField(blank=True, max_length=16)),
+                ("my_sig_info", models.CharField(blank=True, max_length=32)),
+                ("sota_ref", models.CharField(blank=True, max_length=16)),
+                ("my_sota_ref", models.CharField(blank=True, max_length=16)),
+                ("notes", models.TextField(blank=True)),
+                ("extras", models.JSONField(blank=True, default=dict)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("imp", models.ForeignKey(on_delete=models.CASCADE, related_name="staged_entries", to="logbook.logimport")),
+            ],
+            options={"ordering": ["-qso_date", "-time_on", "callsign"]},
+        ),
+    ]
+

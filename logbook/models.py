@@ -226,6 +226,21 @@ class LogImport(models.Model):
     notes = models.TextField(blank=True)
     meta = models.JSONField(default=dict, blank=True)
 
+    # Import file storage and status
+    STATUS_PENDING = "pending"
+    STATUS_DONE = "done"
+    STATUS_CANCELLED = "cancelled"
+    STATUS_CHOICES = (
+        (STATUS_PENDING, "Pending"),
+        (STATUS_DONE, "Done"),
+        (STATUS_CANCELLED, "Cancelled"),
+    )
+
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    content_gz = models.BinaryField(null=True, blank=True, help_text="Gzipped original ADIF content")
+    entry_count = models.PositiveIntegerField(default=0)
+    error_count = models.PositiveIntegerField(default=0)
+
     created_at = models.DateTimeField(auto_now_add=True)
     imported_at = models.DateTimeField(null=True, blank=True)
 
@@ -233,3 +248,85 @@ class LogImport(models.Model):
         label = self.original_filename or self.provider or self.get_format_display()
         return f"{self.get_kind_display()} - {label}"
 
+
+class StagedEntry(models.Model):
+    """Temporary, per-import holding pen for parsed entries before confirmation."""
+
+    imp = models.ForeignKey(LogImport, related_name="staged_entries", on_delete=models.CASCADE)
+
+    # Core identity
+    callsign = models.CharField(max_length=20, db_index=True)
+    qso_date = models.DateField()
+    time_on = models.TimeField()
+
+    # Frequency / Band
+    band = models.CharField(max_length=16, blank=True)
+    freq = models.DecimalField(max_digits=11, decimal_places=6, null=True, blank=True)
+    band_rx = models.CharField(max_length=16, blank=True)
+    freq_rx = models.DecimalField(max_digits=11, decimal_places=6, null=True, blank=True)
+
+    # Mode
+    mode = models.CharField(max_length=32)
+    submode = models.CharField(max_length=32, blank=True)
+
+    # Propagation / Satellite
+    prop_mode = models.CharField(max_length=16, blank=True)
+    sat_name = models.CharField(max_length=32, blank=True)
+
+    # Station/operator identity
+    station_callsign = models.CharField(max_length=20, blank=True)
+    operator = models.CharField(max_length=20, blank=True)
+
+    # RST and other info
+    rst_sent = models.CharField(max_length=8, blank=True)
+    rst_rcvd = models.CharField(max_length=8, blank=True)
+    qso_date_off = models.DateField(null=True, blank=True)
+    time_off = models.TimeField(null=True, blank=True)
+
+    # Exchange / contest related
+    srx = models.PositiveIntegerField(null=True, blank=True)
+    srx_string = models.CharField(max_length=32, blank=True)
+    stx = models.PositiveIntegerField(null=True, blank=True)
+    stx_string = models.CharField(max_length=32, blank=True)
+    country = models.CharField(max_length=64, blank=True)
+    gridsquare = models.CharField(max_length=16, blank=True)
+    name = models.CharField(max_length=64, blank=True)
+    tx_pwr = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    dxcc = models.PositiveIntegerField(null=True, blank=True)
+    cq_zone = models.PositiveIntegerField(null=True, blank=True)
+    itu_zone = models.PositiveIntegerField(null=True, blank=True)
+    iota = models.CharField(max_length=10, blank=True)
+
+    # Station location (MY_*)
+    my_dxcc = models.PositiveIntegerField(null=True, blank=True)
+    my_state = models.CharField(max_length=16, blank=True)
+    my_cnty = models.CharField(max_length=32, blank=True)
+    my_gridsquare = models.CharField(max_length=16, blank=True)
+    my_vucc_grids = models.CharField(max_length=64, blank=True)
+    my_cq_zone = models.PositiveIntegerField(null=True, blank=True)
+    my_itu_zone = models.PositiveIntegerField(null=True, blank=True)
+    my_name = models.CharField(max_length=64, blank=True)
+
+    # QSLing fields
+    lotw_qsl_rcvd = models.CharField(max_length=1, blank=True)
+    lotw_qsl_rcvd_date = models.DateField(null=True, blank=True)
+    lotw_qsl_sent = models.CharField(max_length=1, blank=True)
+    lotw_qsl_sent_date = models.DateField(null=True, blank=True)
+
+    # Programs
+    sig = models.CharField(max_length=16, blank=True)
+    sig_info = models.CharField(max_length=32, blank=True)
+    my_sig = models.CharField(max_length=16, blank=True)
+    my_sig_info = models.CharField(max_length=32, blank=True)
+    sota_ref = models.CharField(max_length=16, blank=True)
+    my_sota_ref = models.CharField(max_length=16, blank=True)
+
+    notes = models.TextField(blank=True)
+
+    # Extras as JSON to capture any unmodeled ADIF fields
+    extras = models.JSONField(default=dict, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-qso_date", "-time_on", "callsign"]

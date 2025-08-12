@@ -1,0 +1,55 @@
+{% extends "logbook/base.html" %}
+{% load logbook_extras %}
+{% block content %}
+  <div class="toolbar">
+    <h2 style="margin:0">Import Review: {{ import.original_filename }}</h2>
+    <div class="stack">
+      <a class="btn" href="{% url 'logbook:import_list' %}">Back to Imports</a>
+      {% if import.status == 'pending' %}
+        <form method="post" action="{% url 'logbook:import_confirm' import.pk %}">{% csrf_token %}<button class="btn" type="submit">Confirm Import</button></form>
+        <form method="post" action="{% url 'logbook:import_cancel' import.pk %}">{% csrf_token %}<button class="btn btn-danger" type="submit">Cancel</button></form>
+      {% endif %}
+    </div>
+  </div>
+
+  <p>
+    Status: {{ import.status }} · Entries: {{ import.entry_count }} · Errors: {{ import.error_count }} · Size: {{ import.size_bytes }} bytes
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        {% for field, label in columns %}
+          <th>{{ label }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+        <tr>
+          {% for field, label in columns %}
+            <td>{{ e|value_for:field }}</td>
+          {% endfor %}
+        </tr>
+      {% empty %}
+        <tr><td colspan="8">No entries parsed.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+  <div class="toolbar">
+    <div></div>
+    <div class="stack">
+      {% if page_obj.has_previous %}
+        <a class="btn" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a class="btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock %}
