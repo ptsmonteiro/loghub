@@ -167,8 +167,7 @@ def finalize_import(imp: LogImport) -> int:
         if se.extras:
             LogEntryExtras.objects.create(entry=entry, data=se.extras)
         count += 1
-    # Clear staged entries after finalization
-    imp.staged_entries.all().delete()
+    # Keep staged entries for historical review; do not delete after finalization
     return count
 
 

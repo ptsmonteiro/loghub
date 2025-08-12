@@ -369,7 +369,7 @@ def import_cancel(request, pk: int):
     imp = LogImport.objects.get(pk=pk)
     if imp.status != LogImport.STATUS_PENDING:
         return HttpResponseBadRequest("Import not pending")
-    imp.staged_entries.all().delete()
+    # Keep staged entries for canceled imports so details remain visible
     imp.status = LogImport.STATUS_CANCELLED
     imp.save(update_fields=["status"])
     return HttpResponseRedirect(reverse("logbook:list"))
