@@ -3,8 +3,8 @@ import datetime as dt
 import pytest
 
 from decimal import Decimal
-from qsos.adif import qso_to_adif, queryset_to_adif
-from qsos.models import QSO
+from logbook.adif import entry_to_adif as qso_to_adif, queryset_to_adif
+from logbook.models import LogEntry as QSO
 
 
 @pytest.mark.django_db
@@ -32,7 +32,7 @@ def test_export_view(client):
         band="20m",
         mode="FT8",
     )
-    resp = client.get("/qsos/export.adif")
+    resp = client.get("/logbook/export.adif")
     assert resp.status_code == 200
     body = resp.content.decode()
     assert "<ADIF_VER:" in body and body.strip().endswith("<EOR>")

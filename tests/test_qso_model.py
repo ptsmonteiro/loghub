@@ -1,6 +1,6 @@
 import datetime as dt
 
-from qsos.models import QSO
+from logbook.models import LogEntry as QSO
 
 
 def test_qso_str():
@@ -13,4 +13,3 @@ def test_qso_str():
     )
     s = str(q)
     assert "K1ABC" in s and "20m" in s and "SSB" in s
-

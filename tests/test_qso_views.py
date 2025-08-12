@@ -3,19 +3,19 @@ import datetime as dt
 import pytest
 from django.urls import reverse
 
-from qsos.models import QSO
+from logbook.models import LogEntry as QSO
 
 
 @pytest.mark.django_db
 def test_list_view_status_code(client):
-    url = reverse("qsos:list")
+    url = reverse("logbook:list")
     resp = client.get(url)
     assert resp.status_code == 200
 
 
 @pytest.mark.django_db
 def test_create_qso_flow(client):
-    url = reverse("qsos:create")
+    url = reverse("logbook:create")
     payload = {
         "callsign": "K1ABC",
         "qso_date": dt.date(2024, 1, 1).isoformat(),
@@ -26,4 +26,3 @@ def test_create_qso_flow(client):
     resp = client.post(url, data=payload, follow=False)
     assert resp.status_code in (302, 303)
     assert QSO.objects.count() == 1
-

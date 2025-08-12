@@ -3,10 +3,10 @@ from django.urls import include, path
 
 
 def root_redirect(_request):
-    return HttpResponseRedirect("/qsos/")
+    return HttpResponseRedirect("/logbook/")
 
 
 urlpatterns = [
     path("", root_redirect, name="root"),
-    path("qsos/", include("qsos.urls")),
+    path("logbook/", include("logbook.urls")),
 ]

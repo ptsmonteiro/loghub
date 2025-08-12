@@ -1,6 +1,6 @@
 LogHub (Django + HTMX)
 
-Basic QSO CRUD scaffolding using latest stable Django, HTMX, and Postgres-ready settings.
+Basic logbook (QSO) CRUD scaffolding using latest stable Django, HTMX, and Postgres-ready settings.
 
 Quickstart
 
@@ -31,7 +31,7 @@ Steps
    python manage.py createsuperuser  # optional
    python manage.py runserver
 
-Then open http://127.0.0.1:8000/ to access the QSOs UI.
+Then open http://127.0.0.1:8000/ to access the Logbook UI at `/logbook/`.
 
 Notes
 

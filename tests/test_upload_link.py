@@ -2,7 +2,7 @@ import datetime as dt
 import pytest
 from django.db.models.deletion import ProtectedError
 
-from qsos.models import QSO, LogImport
+from logbook.models import LogEntry as QSO, LogImport
 
 
 @pytest.mark.django_db
@@ -22,7 +22,7 @@ def test_qso_can_link_to_upload_and_protects_delete():
         upload=up,
     )
     assert q.upload_id == up.id
-    assert up.qsos.count() == 1
+    assert up.entries.count() == 1
 
     with pytest.raises(ProtectedError):
         up.delete()

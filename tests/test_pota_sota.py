@@ -1,8 +1,8 @@
 import datetime as dt
 import pytest
 
-from qsos.adif import qso_to_adif
-from qsos.models import QSO
+from logbook.adif import entry_to_adif as qso_to_adif
+from logbook.models import LogEntry as QSO
 
 
 @pytest.mark.django_db

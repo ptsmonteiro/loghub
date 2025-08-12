@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./qsos/templates/**/*.html",
+    "./logbook/templates/**/*.html",
     "./templates/**/*.html",
   ],
   theme: {
@@ -9,4 +9,3 @@ module.exports = {
   },
   plugins: [],
 };
-

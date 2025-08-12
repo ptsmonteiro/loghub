@@ -1,11 +1,12 @@
-{% extends "qsos/base.html" %}
+{% extends "logbook/base.html" %}
 {% block content %}
 <div class="toolbar">
-  <h2 style="margin:0">QSO {{ object.callsign }}</h2>
+  <h2 style="margin:0">Log Entry {{ object.callsign }}</h2>
   <div class="stack">
-    <a class="btn" href="{% url 'qsos:update' object.pk %}">Edit</a>
-    <a class="btn btn-danger" href="{% url 'qsos:delete' object.pk %}">Delete</a>
+    <a class="btn" href="{% url 'logbook:update' object.pk %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'logbook:delete' object.pk %}">Delete</a>
   </div>
+  
 </div>
 
 <table>
@@ -50,5 +51,6 @@
 </table>
 {% endif %}
 
-<p><a class="btn" href="{% url 'qsos:list' %}">Back</a></p>
+<p><a class="btn" href="{% url 'logbook:list' %}">Back</a></p>
 {% endblock %}
+

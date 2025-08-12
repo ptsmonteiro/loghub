@@ -7,3 +7,5 @@ db.sqlite3
 staticfiles/
 static/css/tailwind.css
 node_modules/
+.DS_Store
+

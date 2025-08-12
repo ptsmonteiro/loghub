@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     # Core minimal contrib apps
     "django.contrib.staticfiles",
     # Local apps
-    "qsos",
+    "logbook",
 ]
 
 MIDDLEWARE = [

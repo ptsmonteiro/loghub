@@ -1,12 +1,13 @@
 from django import forms
 
-from .models import QSO
+from .models import LogEntry
 
 
-class QSOForm(forms.ModelForm):
+class LogEntryForm(forms.ModelForm):
     extras = forms.JSONField(required=False, help_text="Optional: additional ADIF fields as a JSON object")
+
     class Meta:
-        model = QSO
+        model = LogEntry
         fields = [
             "callsign",
             "qso_date",
@@ -72,3 +73,4 @@ class QSOForm(forms.ModelForm):
         inst = kwargs.get("instance") or getattr(self, "instance", None)
         if inst and getattr(inst, "extras", None):
             self.fields["extras"].initial = inst.extras.data
+

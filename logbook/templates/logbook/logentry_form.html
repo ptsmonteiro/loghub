@@ -1,9 +1,9 @@
-{% extends "qsos/base.html" %}
+{% extends "logbook/base.html" %}
 {% block content %}
   {% if object %}
-    <h2>Edit QSO</h2>
+    <h2>Edit Log Entry</h2>
   {% else %}
-    <h2>New QSO</h2>
+    <h2>New Log Entry</h2>
   {% endif %}
 
   <form method="post" class="stack">
@@ -24,7 +24,8 @@
     {% endfor %}
     <div class="actions stack">
       <button class="btn" type="submit">Save</button>
-      <a class="btn" href="{% url 'qsos:list' %}">Cancel</a>
+      <a class="btn" href="{% url 'logbook:list' %}">Cancel</a>
     </div>
   </form>
 {% endblock %}
+

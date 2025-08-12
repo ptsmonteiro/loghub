@@ -1,8 +1,8 @@
 import datetime as dt
 import pytest
 
-from qsos.models import QSO, QSOExtras
-from qsos.adif import qso_to_adif
+from logbook.models import LogEntry as QSO, LogEntryExtras as QSOExtras
+from logbook.adif import entry_to_adif as qso_to_adif
 
 
 @pytest.mark.django_db
@@ -14,8 +14,7 @@ def test_qso_extras_saved_and_exported():
         band="20m",
         mode="SSB",
     )
-    QSOExtras.objects.create(qso=q, data={"IOTA": "EU-005", "SUBMODE": "JS8"})
+    QSOExtras.objects.create(entry=q, data={"IOTA": "EU-005", "SUBMODE": "JS8"})
     s = qso_to_adif(q)
     assert "<IOTA:6>EU-005" in s
     assert "<SUBMODE:3>JS8" in s
-

@@ -2,7 +2,7 @@ import datetime as dt
 import pytest
 from decimal import Decimal
 
-from qsos.models import QSO
+from logbook.models import LogEntry as QSO
 
 
 @pytest.mark.django_db
@@ -43,4 +43,3 @@ def test_callsign_validation_rules():
     )
     with pytest.raises(Exception):
         q.save()
-

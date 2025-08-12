@@ -6,15 +6,15 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
-class QSO(models.Model):
-    """QSO model following LoTW-relevant ADIF fields and constraints."""
+class LogEntry(models.Model):
+    """Single log entry (a QSO) with ADIF-aligned fields and constraints."""
 
-    # Core QSO identity
+    # Core identity
     callsign = models.CharField(max_length=20, db_index=True, help_text="CALL: Station worked")
     qso_date = models.DateField(help_text="QSO_DATE: UTC date contact established")
     time_on = models.TimeField(help_text="TIME_ON: UTC time contact established")
 
-    # Frequency / Band (one of BAND or FREQ must be present)
+    # Frequency / Band
     band = models.CharField(max_length=16, blank=True, help_text="BAND, e.g., 20m (derived from FREQ if absent)")
     freq = models.DecimalField(
         max_digits=11,
@@ -69,25 +69,25 @@ class QSO(models.Model):
     my_itu_zone = models.PositiveIntegerField(null=True, blank=True)
     my_name = models.CharField(max_length=64, blank=True, help_text="MY_NAME (operator name)")
 
-    # QSLing fields (LoTW focus)
+    # QSLing fields
     lotw_qsl_rcvd = models.CharField(max_length=1, blank=True, help_text="LOTW_QSL_RCVD (Y/N/R/I/V)")
     lotw_qsl_rcvd_date = models.DateField(null=True, blank=True)
     lotw_qsl_sent = models.CharField(max_length=1, blank=True, help_text="LOTW_QSL_SENT (Y/N/R/I/V)")
     lotw_qsl_sent_date = models.DateField(null=True, blank=True)
 
-    # Programs (ADIF-compatible) — covers POTA/SOTA via SIG fields; SOTA also has dedicated fields in ADIF
+    # Programs (ADIF-compatible)
     sig = models.CharField(max_length=16, blank=True, help_text="SIG (e.g., POTA/SOTA)")
     sig_info = models.CharField(max_length=32, blank=True, help_text="SIG_INFO (e.g., park/summit ref)")
     my_sig = models.CharField(max_length=16, blank=True, help_text="MY_SIG (e.g., POTA/SOTA)")
     my_sig_info = models.CharField(max_length=32, blank=True, help_text="MY_SIG_INFO (e.g., park/summit ref)")
-    # SOTA has dedicated fields in ADIF
+    # SOTA dedicated fields
     sota_ref = models.CharField(max_length=16, blank=True, help_text="SOTA_REF (worked station)")
     my_sota_ref = models.CharField(max_length=16, blank=True, help_text="MY_SOTA_REF")
 
     notes = models.TextField(blank=True)
 
-    # Link to upload/import batch this QSO came from
-    upload = models.ForeignKey('LogImport', related_name='qsos', null=True, blank=True, on_delete=models.PROTECT)
+    # Link to upload/import batch this entry came from
+    upload = models.ForeignKey('LogImport', related_name='entries', null=True, blank=True, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -108,7 +108,7 @@ class QSO(models.Model):
         v = value.strip().upper()
         if len(v) < 3 or len(v) > 20:
             raise ValidationError({field_name: "Callsign length must be 3..20"})
-        if not QSO._CALLSIGN_RE.match(v):
+        if not LogEntry._CALLSIGN_RE.match(v):
             raise ValidationError({field_name: "Callsign must contain A-Z, 0-9 or '/' only"})
         if v.startswith("/") or v.endswith("/"):
             raise ValidationError({field_name: "Callsign must not begin or end with '/'"})
@@ -178,26 +178,24 @@ class QSO(models.Model):
             if not self.sat_name:
                 raise ValidationError({"sat_name": "SAT_NAME required when PROP_MODE is SAT"})
         else:
-            # If not SAT, clear SAT_NAME if present but allow keeping it blank
             if self.sat_name:
                 raise ValidationError({"sat_name": "SAT_NAME must be omitted unless PROP_MODE is SAT"})
 
-        # If STATION_CALLSIGN absent but OPERATOR present, per ADIF treat OPERATOR as station callsign
+        # If STATION_CALLSIGN absent but OPERATOR present
         if not self.station_callsign and self.operator:
             self.station_callsign = self.operator
 
     def save(self, *args, **kwargs):
-        # Ensure validation and derivations run on save from any path
         self.full_clean()
         return super().save(*args, **kwargs)
 
 
-class QSOExtras(models.Model):
-    qso = models.OneToOneField(QSO, related_name="extras", on_delete=models.CASCADE)
+class LogEntryExtras(models.Model):
+    entry = models.OneToOneField(LogEntry, related_name="extras", on_delete=models.CASCADE)
     data = models.JSONField(default=dict, blank=True, help_text="Sparse ADIF fields not in core schema")
 
     def __str__(self) -> str:  # pragma: no cover - trivial
-        return f"Extras for QSO {self.qso_id}"
+        return f"Extras for entry {self.entry_id}"
 
 
 class LogImport(models.Model):
@@ -234,3 +232,4 @@ class LogImport(models.Model):
     def __str__(self) -> str:  # pragma: no cover - trivial
         label = self.original_filename or self.provider or self.get_format_display()
         return f"{self.get_kind_display()} - {label}"
+

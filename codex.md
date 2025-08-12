@@ -1,13 +1,13 @@
 This project uses Django + HTMX designed for a solo developer working sporadically, but structured so open‑source contributors can easily join in. It includes Docker, Postgres, Tailwind (CLI), pytest, pre‑commit, GitHub Actions CI, and Renovate bot support for automated dependency updates.
 The project is called LogHub.
 
-Purpose: To be a centralized logging platform.
+Purpose: To be a centralized amateur radio logging platform.
 
 Features:
-Each QSO should follow the guidelines from the LOTW developer information pages.
-LogHub will accept uploads from ADIF files and save the upload metadata (date, station callsign, location details, comment, original filename, etc) so that it knows where QSOs came from in the future.
-It will also keep track of imports from online services like LOTW, clublog, qrz, hrdlog, etc. For each service it will mirror the QSOs locally so he knows if the main database is out of sync or not.
-It will allow imported QSOs to propagate to the online services if they support it.
+Each log entry (QSO) should follow the guidelines from the LOTW developer information pages.
+LogHub will accept uploads from ADIF files and save the upload metadata (date, station callsign, location details, comment, original filename, etc) so that it knows where log entries came from in the future.
+It will also keep track of imports from online services like LOTW, clublog, qrz, hrdlog, etc. For each service it will mirror the log entries locally so he knows if the main database is out of sync or not.
+It will allow imported log entries (QSOs) to propagate to the online services if they support it.
 
 Practices:
 
