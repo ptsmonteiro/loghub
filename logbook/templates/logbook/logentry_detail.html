@@ -1,4 +1,5 @@
 {% extends "logbook/base.html" %}
+{% load logbook_extras %}
 {% block content %}
 <div class="toolbar">
   <h2 style="margin:0">Log Entry {{ object.callsign }}</h2>
@@ -12,8 +13,8 @@
 <table>
   <tbody>
     <tr><th>Callsign</th><td>{{ object.callsign }}</td></tr>
-    <tr><th>Date</th><td>{{ object.qso_date }}</td></tr>
-    <tr><th>Time</th><td>{{ object.time_on }}</td></tr>
+    <tr><th>Date</th><td>{{ object.qso_date|zulu }}</td></tr>
+    <tr><th>Time</th><td>{{ object.time_on|zulu }}</td></tr>
     <tr><th>Band</th><td>{{ object.band }}</td></tr>
     <tr><th>Freq</th><td>{{ object.freq }}</td></tr>
     <tr><th>Band RX</th><td>{{ object.band_rx }}</td></tr>
@@ -53,4 +54,3 @@
 
 <p><a class="btn" href="{% url 'logbook:list' %}">Back</a></p>
 {% endblock %}
-

@@ -28,7 +28,7 @@
       {% for e in entries %}
         <tr>
           {% for field, label in columns %}
-            <td>{{ e|value_for:field }}</td>
+            <td>{{ e|value_for:field|zulu }}</td>
           {% endfor %}
         </tr>
       {% empty %}
