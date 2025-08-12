@@ -10,6 +10,7 @@ from .adif import queryset_to_adif
 class LogEntryListView(ListView):
     model = LogEntry
     paginate_by = 25
+    ordering = ["-qso_date", "-time_on", "callsign"]
 
 
 class LogEntryDetailView(DetailView):
@@ -54,4 +55,3 @@ def logbook_export_adif(_request):
     resp = HttpResponse(data, content_type="text/plain; charset=utf-8")
     resp["Content-Disposition"] = "attachment; filename=loghub_export.adi"
     return resp
-
